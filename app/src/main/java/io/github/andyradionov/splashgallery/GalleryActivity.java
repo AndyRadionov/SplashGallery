@@ -1,5 +1,6 @@
 package io.github.andyradionov.splashgallery;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,11 @@ import java.util.List;
 import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.model.Image;
 
+/**
+ * Main Application screen with Image gallery
+ *
+ * @author Andrey Radionov
+ */
 public class GalleryActivity extends AppCompatActivity implements
         GalleryAdapter.OnGalleryImageClickListener, GalleryView {
 
@@ -117,8 +123,8 @@ public class GalleryActivity extends AppCompatActivity implements
 
                 return true;
             case R.id.action_about:
-                Intent intent = new Intent(this, AboutActivity.class);
-                startActivity(intent);
+                final Intent showAboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(showAboutIntent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
