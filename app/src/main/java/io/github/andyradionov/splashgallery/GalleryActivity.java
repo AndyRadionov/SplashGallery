@@ -29,6 +29,7 @@ public class GalleryActivity extends AppCompatActivity implements
     private static final String CURRENT_QUERY_KEY = "current_query";
     private static final String CURRENT_PAGE_KEY = "current_page";
 
+    private PagingScrollListener mScrollListener;
     private GalleryAdapter mGalleryAdapter;
     private ProgressBar mLoadingIndicator;
     private int mCurrentPage;
@@ -52,6 +53,16 @@ public class GalleryActivity extends AppCompatActivity implements
         GridLayoutManager layoutManager = new GridLayoutManager(this, columns);
         galleryContainer.setAdapter(mGalleryAdapter);
         galleryContainer.setLayoutManager(layoutManager);
+
+        mScrollListener = new PagingScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view) {
+                mCurrentPage = page;
+                App.getImagesNetworkStore().searchImages(GalleryActivity.this, mCurrentRequest, mCurrentPage);
+            }
+        };
+        galleryContainer.addOnScrollListener(mScrollListener);
+
     }
 
     @Override
@@ -109,6 +120,7 @@ public class GalleryActivity extends AppCompatActivity implements
     }
 
     private void restartSearch(String query) {
+        mScrollListener.resetState();
         mCurrentPage = 1;
         mCurrentRequest = query;
         mGalleryAdapter.clearData();
@@ -123,8 +135,8 @@ public class GalleryActivity extends AppCompatActivity implements
 
                 return true;
             case R.id.action_about:
-                final Intent showAboutIntent = new Intent(this, AboutActivity.class);
-                startActivity(showAboutIntent);
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -132,6 +144,9 @@ public class GalleryActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(@NonNull String imageUrl) {
+        Intent showImageIntent = new Intent(this, ImageDetailsActivity.class);
+        showImageIntent.putExtra(ImageDetailsActivity.IMAGE_URL_EXTRA, imageUrl);
+        startActivity(showImageIntent);
     }
 
     @Override
@@ -145,5 +160,10 @@ public class GalleryActivity extends AppCompatActivity implements
     public void showError() {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void disableLoading() {
+        mScrollListener.disableLoadingMore();
     }
 }

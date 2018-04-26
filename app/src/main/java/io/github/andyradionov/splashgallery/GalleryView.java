@@ -15,4 +15,6 @@ public interface GalleryView {
     void showImages(@NonNull List<Image> images);
 
     void showError();
+
+    void disableLoading();
 }

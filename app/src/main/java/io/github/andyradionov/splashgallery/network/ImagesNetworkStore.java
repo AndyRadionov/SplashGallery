@@ -22,11 +22,15 @@ import timber.log.Timber;
  */
 
 public class ImagesNetworkStore {
-
+    private final List<Image> mCachedImages;
+    private int mCurrentPage;
+    private int mMaxPage;
+    private String mCurrentSearchRequest;
     private Disposable mSubscription;
 
     public ImagesNetworkStore() {
         Timber.d("Constructor call");
+        mCachedImages = new ArrayList<>(App.PAGE_SIZE);
     }
 
     /**
@@ -47,6 +51,17 @@ public class ImagesNetworkStore {
             mSubscription = null;
         }
 
+        if (isRequestCached(query, page) || isMaxPage(page)) {
+            galleryView.showImages(mCachedImages);
+            return;
+        }
+
+        if (isMaxPage(page)) {
+            galleryView.disableLoading();
+            return;
+        }
+        if (isNewRequest(query)) clearCache(query);
+
         mSubscription = App.getImagesApi()
                 .searchImages(query, page)
                 .subscribeOn(Schedulers.io())
@@ -55,17 +70,52 @@ public class ImagesNetworkStore {
                     Timber.d("doOnError: %s", throwable);
                     galleryView.showError();
                 })
-                .map(getSearchResultDto -> getSearchResultDto.getResults())
+                .map(getSearchResultDto -> {
+                    if (mMaxPage == 0) setMaxPage(getSearchResultDto.getTotalPages());
+                    return getSearchResultDto.getResults();
+                })
                 .subscribe(images -> {
                     Timber.d("subscribe result: %s", images);
                     if (images.isEmpty()) {
                         galleryView.showError();
                     } else {
+                        cachePage(images, page);
                         galleryView.showImages(images);
                     }
                 }, throwable -> {
                     Timber.d("subscribe failure: %s", throwable);
                     galleryView.showError();
                 });
+    }
+
+    private boolean isRequestCached(@NonNull final String query, final int page) {
+        return page == mCurrentPage
+                && query.equals(mCurrentSearchRequest)
+                && !mCachedImages.isEmpty();
+    }
+
+    private boolean isNewRequest(@NonNull final String query) {
+        return TextUtils.isEmpty(mCurrentSearchRequest)
+                || !mCurrentSearchRequest.equals(query);
+    }
+
+    private void clearCache(@NonNull final String query) {
+        mCachedImages.clear();
+        mCurrentSearchRequest = query;
+        mCurrentPage = 1;
+        mMaxPage = 0;
+    }
+
+    private void cachePage(@NonNull final List<Image> images, final int page) {
+        mCachedImages.addAll(images);
+        mCurrentPage = page;
+    }
+
+    private boolean isMaxPage(final int page) {
+        return (mMaxPage != 0 && page > mMaxPage);
+    }
+
+    private void setMaxPage(final int totalPagesInRequest) {
+        mMaxPage = totalPagesInRequest >= App.MAX_PAGE_NUMBER ? App.MAX_PAGE_NUMBER : totalPagesInRequest;
     }
 }
