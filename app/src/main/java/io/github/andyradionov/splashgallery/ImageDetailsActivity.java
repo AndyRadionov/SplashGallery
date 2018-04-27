@@ -32,10 +32,12 @@ import timber.log.Timber;
  * @author Andrey Radionov
  */
 public class ImageDetailsActivity extends AppCompatActivity implements ImageSaveCallback {
+
     private static final int REQUEST_STORAGE_PERMISSION = 42;
+    private static final String IS_IMAGE_LOADED_KEY = "is_image_loaded";
 
     public static final String IMAGE_URL_EXTRA = "image_url";
-    private boolean isImageLoaded;
+    private boolean mIsImageLoaded;
     private String mImageUrl;
 
     @Override
@@ -52,7 +54,7 @@ public class ImageDetailsActivity extends AppCompatActivity implements ImageSave
         Picasso.get().load(mImageUrl).into(imageDetailsView, new Callback() {
             @Override
             public void onSuccess() {
-                isImageLoaded = true;
+                mIsImageLoaded = true;
                 imageLoadingIndicator.setVisibility(View.INVISIBLE);
                 supportInvalidateOptionsMenu();
             }
@@ -66,6 +68,18 @@ public class ImageDetailsActivity extends AppCompatActivity implements ImageSave
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_IMAGE_LOADED_KEY, mIsImageLoaded);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mIsImageLoaded = savedInstanceState.getBoolean(IS_IMAGE_LOADED_KEY);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details, menu);
         return true;
@@ -76,10 +90,10 @@ public class ImageDetailsActivity extends AppCompatActivity implements ImageSave
         MenuItem item = menu.findItem(R.id.action_save);
         Drawable resIcon = getResources().getDrawable(android.R.drawable.ic_menu_save);
 
-        if (!isImageLoaded)
+        if (!mIsImageLoaded)
             resIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
 
-        item.setEnabled(isImageLoaded);
+        item.setEnabled(mIsImageLoaded);
         item.setIcon(resIcon);
         return true;
     }
