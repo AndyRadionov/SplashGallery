@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.network.ImagesApi;
-import io.github.andyradionov.splashgallery.network.ImagesNetworkStore;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
@@ -28,7 +27,6 @@ public class App extends Application {
 
     private static String sApiKey;
     private static ImagesApi sImagesApi;
-    private static ImagesNetworkStore sImagesNetworkStore;
 
     @Override
     public void onCreate() {
@@ -37,7 +35,6 @@ public class App extends Application {
 
         sApiKey = "Client-ID " + getString(R.string.client_id);
         sImagesApi = createApi();
-        sImagesNetworkStore = new ImagesNetworkStore();
     }
 
     /**
@@ -46,14 +43,6 @@ public class App extends Application {
      */
     public static ImagesApi getImagesApi() {
         return sImagesApi;
-    }
-
-    /**
-     * Provides Class that works with Retrofit Api
-     * @return ImagesNetworkStore
-     */
-    public static ImagesNetworkStore getImagesNetworkStore() {
-        return sImagesNetworkStore;
     }
 
     private static ImagesApi createApi() {

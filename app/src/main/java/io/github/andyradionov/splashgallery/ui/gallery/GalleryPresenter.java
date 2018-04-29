@@ -1,12 +1,14 @@
-package io.github.andyradionov.splashgallery.network;
+package io.github.andyradionov.splashgallery.ui.gallery;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.arellomobile.mvp.InjectViewState;
+import com.arellomobile.mvp.MvpPresenter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.andyradionov.splashgallery.GalleryView;
 import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.model.Image;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -15,20 +17,18 @@ import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
- * Class for working with {@link ImagesApi}
- * Provides images search and caching previous search result
- *
  * @author Andrey Radionov
  */
+@InjectViewState
+public class GalleryPresenter extends MvpPresenter<GalleryView> {
 
-public class ImagesNetworkStore {
     private final List<Image> mCachedImages;
     private int mCurrentPage;
     private int mMaxPage;
     private String mCurrentSearchRequest;
     private Disposable mSubscription;
 
-    public ImagesNetworkStore() {
+    public GalleryPresenter() {
         Timber.d("Constructor call");
         mCachedImages = new ArrayList<>(App.PAGE_SIZE);
     }
@@ -36,13 +36,10 @@ public class ImagesNetworkStore {
     /**
      * Searching images and caching previous result
      *
-     * @param galleryView GalleryView that provides callBack methods for showing result
      * @param query User search query input or default gallery
      * @param page Page that needs to be load
      */
-    public final void searchImages(@NonNull final GalleryView galleryView,
-                                   @NonNull final String query,
-                                   final int page) {
+    public final void searchImages(@NonNull final String query, final int page) {
 
         Timber.d("searchImages(query = %s, page = %d)", query, page);
 
@@ -52,12 +49,12 @@ public class ImagesNetworkStore {
         }
 
         if (isRequestCached(query, page) || isMaxPage(page)) {
-            galleryView.showImages(mCachedImages);
+            getViewState().showImages(mCachedImages);
             return;
         }
 
         if (isMaxPage(page)) {
-            galleryView.disableLoading();
+            getViewState().disableLoading();
             return;
         }
         if (isNewRequest(query)) clearCache(query);
@@ -68,7 +65,7 @@ public class ImagesNetworkStore {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> {
                     Timber.d("doOnError: %s", throwable);
-                    galleryView.showError();
+                    getViewState().showError();
                 })
                 .map(getSearchResultDto -> {
                     if (mMaxPage == 0) setMaxPage(getSearchResultDto.getTotalPages());
@@ -77,14 +74,14 @@ public class ImagesNetworkStore {
                 .subscribe(images -> {
                     Timber.d("subscribe result: %s", images);
                     if (images.isEmpty()) {
-                        galleryView.showError();
+                        getViewState().showError();
                     } else {
                         cachePage(images, page);
-                        galleryView.showImages(images);
+                        getViewState().showImages(images);
                     }
                 }, throwable -> {
                     Timber.d("subscribe failure: %s", throwable);
-                    galleryView.showError();
+                    getViewState().showError();
                 });
     }
 

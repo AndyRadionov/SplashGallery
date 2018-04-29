@@ -1,9 +1,8 @@
-package io.github.andyradionov.splashgallery;
+package io.github.andyradionov.splashgallery.ui.gallery;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -13,22 +12,29 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+
 import java.util.List;
 
+import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.model.Image;
+import io.github.andyradionov.splashgallery.ui.about.AboutActivity;
+import io.github.andyradionov.splashgallery.ui.details.ImageDetailsActivity;
 
 /**
  * Main Application screen with Image gallery
  *
  * @author Andrey Radionov
  */
-public class GalleryActivity extends AppCompatActivity implements
+public class GalleryActivity extends MvpAppCompatActivity implements
         GalleryAdapter.OnGalleryImageClickListener, GalleryView {
 
     private static final String CURRENT_QUERY_KEY = "current_query";
     private static final String CURRENT_PAGE_KEY = "current_page";
 
+    @InjectPresenter GalleryPresenter mGalleryPresenter;
     private PagingScrollListener mScrollListener;
     private GalleryAdapter mGalleryAdapter;
     private ProgressBar mLoadingIndicator;
@@ -58,7 +64,7 @@ public class GalleryActivity extends AppCompatActivity implements
             @Override
             public void onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view) {
                 mCurrentPage = page;
-                App.getImagesNetworkStore().searchImages(GalleryActivity.this, mCurrentRequest, mCurrentPage);
+                mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
             }
         };
         galleryContainer.addOnScrollListener(mScrollListener);
@@ -82,7 +88,7 @@ public class GalleryActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        App.getImagesNetworkStore().searchImages(this, mCurrentRequest, mCurrentPage);
+        mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
     }
 
     @Override
@@ -125,7 +131,7 @@ public class GalleryActivity extends AppCompatActivity implements
         mCurrentPage = 1;
         mCurrentRequest = query;
         mGalleryAdapter.clearData();
-        App.getImagesNetworkStore().searchImages(GalleryActivity.this, query, mCurrentPage);
+        mGalleryPresenter.searchImages(query, mCurrentPage);
     }
 
     @Override

@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".GalleryActivity"
+        <activity android:name=".ui.gallery.GalleryActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,19 +26,19 @@
         </activity>
 
         <activity
-            android:name=".AboutActivity"
+            android:name=".ui.about.AboutActivity"
             android:label="About"
-            android:parentActivityName=".GalleryActivity">
+            android:parentActivityName=".ui.gallery.GalleryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GalleryActivity" />
+                android:value=".ui.gallery.GalleryActivity" />
         </activity>
 
-        <activity android:name=".ImageDetailsActivity"
-            android:parentActivityName=".GalleryActivity">
+        <activity android:name=".ui.details.ImageDetailsActivity"
+            android:parentActivityName=".ui.gallery.GalleryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GalleryActivity" />
+                android:value=".ui.gallery.GalleryActivity" />
         </activity>
     </application>
 

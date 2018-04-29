@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import io.github.andyradionov.splashgallery.ImageSaveCallback;
+import io.github.andyradionov.splashgallery.ui.details.ImageSaveCallback;
 import io.github.andyradionov.splashgallery.app.App;
 import timber.log.Timber;
 
@@ -123,9 +123,9 @@ public class ImageSaverUtils {
         @Override
         protected void onPostExecute(@NonNull final Boolean result) {
             if (result) {
-                callback.showSaveSuccess();
+                callback.showSuccess();
             } else {
-                callback.showSaveError();
+                callback.showError();
             }
         }
     }

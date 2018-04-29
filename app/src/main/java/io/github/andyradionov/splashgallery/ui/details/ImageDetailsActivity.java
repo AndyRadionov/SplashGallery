@@ -1,4 +1,4 @@
-package io.github.andyradionov.splashgallery;
+package io.github.andyradionov.splashgallery.ui.details;
 
 import android.Manifest;
 import android.content.Intent;
@@ -6,12 +6,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,11 +18,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import de.mateware.snacky.Snacky;
-import io.github.andyradionov.splashgallery.utils.ImageSaverUtils;
+import io.github.andyradionov.splashgallery.R;
 import timber.log.Timber;
 
 /**
@@ -31,12 +32,13 @@ import timber.log.Timber;
  *
  * @author Andrey Radionov
  */
-public class ImageDetailsActivity extends AppCompatActivity implements ImageSaveCallback {
+public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageDetailsView {
 
     private static final int REQUEST_STORAGE_PERMISSION = 42;
     private static final String IS_IMAGE_LOADED_KEY = "is_image_loaded";
-
     public static final String IMAGE_URL_EXTRA = "image_url";
+
+    @InjectPresenter ImageDetailsPresenter mImageDetailsPresenter;
     private boolean mIsImageLoaded;
     private String mImageUrl;
 
@@ -126,7 +128,7 @@ public class ImageDetailsActivity extends AppCompatActivity implements ImageSave
         if (requestCode == REQUEST_STORAGE_PERMISSION) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                ImageSaverUtils.saveImage(this, mImageUrl);
+                mImageDetailsPresenter.saveImage(mImageUrl);
             } else {
                 Toast.makeText(this, "PERMISSIONS!", Toast.LENGTH_SHORT).show();
             }
@@ -143,7 +145,7 @@ public class ImageDetailsActivity extends AppCompatActivity implements ImageSave
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_STORAGE_PERMISSION);
         } else {
-            ImageSaverUtils.saveImage(this, mImageUrl);
+            mImageDetailsPresenter.saveImage(mImageUrl);
         }
     }
 

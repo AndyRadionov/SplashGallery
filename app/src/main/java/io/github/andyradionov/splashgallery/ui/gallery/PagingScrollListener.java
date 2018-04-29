@@ -1,4 +1,4 @@
-package io.github.andyradionov.splashgallery;
+package io.github.andyradionov.splashgallery.ui.gallery;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
