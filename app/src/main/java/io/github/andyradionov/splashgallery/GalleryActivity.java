@@ -120,6 +120,7 @@ public class GalleryActivity extends AppCompatActivity implements
     }
 
     private void restartSearch(String query) {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
         mScrollListener.resetState();
         mCurrentPage = 1;
         mCurrentRequest = query;
