@@ -47,29 +47,12 @@ public class GalleryActivity extends MvpAppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        mCurrentPage = 1;
-        mCurrentRequest = App.MAIN_GALLERY;
+        if (savedInstanceState == null) {
+            mCurrentPage = 1;
+            mCurrentRequest = App.MAIN_GALLERY;
+        }
 
-        mLoadingIndicator = findViewById(R.id.pb_gallery_loading);
-        RecyclerView galleryContainer = findViewById(R.id.rv_gallery_container);
-        mGalleryAdapter = new GalleryAdapter(this);
-
-        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
-        int columns = isLandscape ? 3 : 2;
-
-        GridLayoutManager layoutManager = new GridLayoutManager(this, columns);
-        galleryContainer.setAdapter(mGalleryAdapter);
-        galleryContainer.setLayoutManager(layoutManager);
-
-        mScrollListener = new PagingScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view) {
-                mCurrentPage = page;
-                mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
-            }
-        };
-        galleryContainer.addOnScrollListener(mScrollListener);
-
+        setupRecycler();
     }
 
     @Override
@@ -136,15 +119,6 @@ public class GalleryActivity extends MvpAppCompatActivity implements
         return true;
     }
 
-    private void restartSearch(String query) {
-        mLoadingIndicator.setVisibility(View.VISIBLE);
-        mScrollListener.resetState();
-        mCurrentPage = 1;
-        mCurrentRequest = query;
-        mGalleryAdapter.clearData();
-        mGalleryPresenter.searchImages(query, mCurrentPage);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -182,5 +156,36 @@ public class GalleryActivity extends MvpAppCompatActivity implements
     @Override
     public void disableLoading() {
         mScrollListener.disableLoadingMore();
+    }
+
+    private void setupRecycler() {
+        mLoadingIndicator = findViewById(R.id.pb_gallery_loading);
+        RecyclerView galleryContainer = findViewById(R.id.rv_gallery_container);
+        mGalleryAdapter = new GalleryAdapter(this);
+
+        boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
+        int columns = isLandscape ? 3 : 2;
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, columns);
+        galleryContainer.setAdapter(mGalleryAdapter);
+        galleryContainer.setLayoutManager(layoutManager);
+
+        mScrollListener = new PagingScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view) {
+                mCurrentPage = page;
+                mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
+            }
+        };
+        galleryContainer.addOnScrollListener(mScrollListener);
+    }
+
+    private void restartSearch(String query) {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        mScrollListener.resetState();
+        mCurrentPage = 1;
+        mCurrentRequest = query;
+        mGalleryAdapter.clearData();
+        mGalleryPresenter.searchImages(query, mCurrentPage);
     }
 }

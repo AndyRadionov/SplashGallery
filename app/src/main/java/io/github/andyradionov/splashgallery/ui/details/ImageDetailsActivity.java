@@ -118,14 +118,6 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
         return super.onOptionsItemSelected(item);
     }
 
-    private Intent createImageShareIntent(final String url) {
-        return ShareCompat.IntentBuilder.from(this)
-                .setType("text/plain")
-                .setChooserTitle("Look at this Image")
-                .setText(url)
-                .getIntent();
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -136,20 +128,6 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
             } else {
                 Toast.makeText(this, "PERMISSIONS!", Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-    private void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // If you do not have permission, request it
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_STORAGE_PERMISSION);
-        } else {
-            mImageDetailsPresenter.saveImage(mImageUrl);
         }
     }
 
@@ -166,6 +144,28 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
         if (!mIsSnackShowed) {
             mIsSnackShowed = true;
             Snacky.builder().setText("ERROR IMAGE SAVING").setActivity(this).error().show();
+        }
+    }
+
+    private Intent createImageShareIntent(final String url) {
+        return ShareCompat.IntentBuilder.from(this)
+                .setType("text/plain")
+                .setChooserTitle("Look at this Image")
+                .setText(url)
+                .getIntent();
+    }
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // If you do not have permission, request it
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_STORAGE_PERMISSION);
+        } else {
+            mImageDetailsPresenter.saveImage(mImageUrl);
         }
     }
 }
