@@ -3,6 +3,7 @@ package io.github.andyradionov.splashgallery.ui.gallery;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -102,8 +103,6 @@ public class GalleryActivity extends MvpAppCompatActivity implements
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                homeAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
                 restartSearch(query);
 
                 if (!searchView.isIconified()) {
@@ -119,8 +118,20 @@ public class GalleryActivity extends MvpAppCompatActivity implements
             }
         });
 
-        searchView.setOnSearchClickListener(v ->
-                homeAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER));
+        searchAction.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                homeAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                homeAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                return true;
+
+            }
+        });
 
         return true;
     }
@@ -139,7 +150,6 @@ public class GalleryActivity extends MvpAppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_home:
                 restartSearch(App.MAIN_GALLERY);
-
                 return true;
             case R.id.action_about:
                 Intent intent = new Intent(this, AboutActivity.class);

@@ -36,16 +36,24 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
 
     private static final int REQUEST_STORAGE_PERMISSION = 42;
     private static final String IS_IMAGE_LOADED_KEY = "is_image_loaded";
+    private static final String IS_SNACK_SHOWED_KEY = "is_snack_showed";
     public static final String IMAGE_URL_EXTRA = "image_url";
 
-    @InjectPresenter ImageDetailsPresenter mImageDetailsPresenter;
+    @InjectPresenter
+    ImageDetailsPresenter mImageDetailsPresenter;
     private boolean mIsImageLoaded;
+    private boolean mIsSnackShowed;
     private String mImageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
+
+        if (savedInstanceState != null) {
+            mIsImageLoaded = savedInstanceState.getBoolean(IS_IMAGE_LOADED_KEY);
+            mIsSnackShowed = savedInstanceState.getBoolean(IS_SNACK_SHOWED_KEY);
+        }
 
         final Intent startIntent = getIntent();
         mImageUrl = startIntent.getStringExtra(IMAGE_URL_EXTRA);
@@ -73,12 +81,7 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(IS_IMAGE_LOADED_KEY, mIsImageLoaded);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mIsImageLoaded = savedInstanceState.getBoolean(IS_IMAGE_LOADED_KEY);
+        outState.putBoolean(IS_SNACK_SHOWED_KEY, mIsSnackShowed);
     }
 
     @Override
@@ -108,6 +111,7 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
                 startActivity(shareIntent);
                 return true;
             case R.id.action_save:
+                mIsSnackShowed = false;
                 checkPermissions();
                 return true;
         }
@@ -151,11 +155,17 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
 
     @Override
     public void showSaveSuccess() {
-        Snacky.builder().setText("IMAGE SAVED").setActivity(this).success().show();
+        if (!mIsSnackShowed) {
+            mIsSnackShowed = true;
+            Snacky.builder().setText("IMAGE SAVED").setActivity(this).success().show();
+        }
     }
 
     @Override
     public void showSaveError() {
-        Snacky.builder().setText("ERROR IMAGE SAVING").setActivity(this).error().show();
+        if (!mIsSnackShowed) {
+            mIsSnackShowed = true;
+            Snacky.builder().setText("ERROR IMAGE SAVING").setActivity(this).error().show();
+        }
     }
 }
