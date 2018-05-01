@@ -163,6 +163,7 @@ public class GalleryActivity extends MvpAppCompatActivity implements
         RecyclerView galleryContainer = findViewById(R.id.rv_gallery_container);
         mGalleryAdapter = new GalleryAdapter(this);
 
+        //todo sw600
         boolean isLandscape = getResources().getBoolean(R.bool.is_landscape);
         int columns = isLandscape ? 3 : 2;
 

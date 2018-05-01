@@ -48,7 +48,7 @@ public class GalleryPresenter extends MvpPresenter<GalleryView> {
             mSubscription = null;
         }
 
-        if (isRequestCached(query, page) || isMaxPage(page)) {
+        if (isRequestCached(query, page)) {
             getViewState().showImages(mCachedImages);
             return;
         }

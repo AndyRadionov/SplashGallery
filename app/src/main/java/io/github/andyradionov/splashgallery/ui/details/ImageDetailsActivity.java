@@ -74,6 +74,8 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
                 //todo add Broken Image instead of loaded
                 Timber.d("+++=====================+++ " + e.getLocalizedMessage());
             }
+
+
         });
     }
 
