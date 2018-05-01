@@ -19,4 +19,6 @@ public interface GalleryView extends MvpView {
     void showError();
 
     void disableLoading();
+
+    void resetSearchState(String query);
 }

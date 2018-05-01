@@ -18,6 +18,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.model.Image;
@@ -36,9 +38,10 @@ public class GalleryActivity extends MvpAppCompatActivity implements
     private static final String CURRENT_PAGE_KEY = "current_page";
 
     @InjectPresenter GalleryPresenter mGalleryPresenter;
+    @BindView(R.id.pb_gallery_loading) ProgressBar mLoadingIndicator;
+    @BindView(R.id.rv_gallery_container) RecyclerView mGalleryContainer;
     private PagingScrollListener mScrollListener;
     private GalleryAdapter mGalleryAdapter;
-    private ProgressBar mLoadingIndicator;
     private int mCurrentPage;
     private String mCurrentRequest;
 
@@ -47,12 +50,14 @@ public class GalleryActivity extends MvpAppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
+        ButterKnife.bind(this);
+
+        setupRecycler();
         if (savedInstanceState == null) {
             mCurrentPage = 1;
             mCurrentRequest = App.MAIN_GALLERY;
+            mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
         }
-
-        setupRecycler();
     }
 
     @Override
@@ -72,7 +77,6 @@ public class GalleryActivity extends MvpAppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
     }
 
     @Override
@@ -158,15 +162,22 @@ public class GalleryActivity extends MvpAppCompatActivity implements
         mScrollListener.disableLoadingMore();
     }
 
+    @Override
+    public void resetSearchState(String query) {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        mScrollListener.resetState();
+        mCurrentPage = 1;
+        mCurrentRequest = query;
+        mGalleryAdapter.clearData();
+    }
+
     private void setupRecycler() {
-        mLoadingIndicator = findViewById(R.id.pb_gallery_loading);
-        RecyclerView galleryContainer = findViewById(R.id.rv_gallery_container);
         mGalleryAdapter = new GalleryAdapter(this);
 
         int columns = getResources().getInteger(R.integer.gallery_cols_number);
         GridLayoutManager layoutManager = new GridLayoutManager(this, columns);
-        galleryContainer.setAdapter(mGalleryAdapter);
-        galleryContainer.setLayoutManager(layoutManager);
+        mGalleryContainer.setAdapter(mGalleryAdapter);
+        mGalleryContainer.setLayoutManager(layoutManager);
 
         mScrollListener = new PagingScrollListener(layoutManager) {
             @Override
@@ -175,15 +186,10 @@ public class GalleryActivity extends MvpAppCompatActivity implements
                 mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
             }
         };
-        galleryContainer.addOnScrollListener(mScrollListener);
+        mGalleryContainer.addOnScrollListener(mScrollListener);
     }
 
     private void restartSearch(String query) {
-        mLoadingIndicator.setVisibility(View.VISIBLE);
-        mScrollListener.resetState();
-        mCurrentPage = 1;
-        mCurrentRequest = query;
-        mGalleryAdapter.clearData();
         mGalleryPresenter.searchImages(query, mCurrentPage);
     }
 }

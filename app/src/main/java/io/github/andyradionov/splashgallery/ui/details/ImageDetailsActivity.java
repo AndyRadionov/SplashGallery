@@ -23,6 +23,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.mateware.snacky.Snacky;
 import io.github.andyradionov.splashgallery.R;
 import timber.log.Timber;
@@ -39,8 +41,9 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
     private static final String IS_SNACK_SHOWED_KEY = "is_snack_showed";
     public static final String IMAGE_URL_EXTRA = "image_url";
 
-    @InjectPresenter
-    ImageDetailsPresenter mImageDetailsPresenter;
+    @InjectPresenter ImageDetailsPresenter mImageDetailsPresenter;
+    @BindView(R.id.iv_image_details) ImageView mImageDetailsView;
+    @BindView(R.id.pb_image_loading) ProgressBar mImageLoadingIndicator;
     private boolean mIsImageLoaded;
     private boolean mIsSnackShowed;
     private String mImageUrl;
@@ -50,6 +53,8 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
 
+        ButterKnife.bind(this);
+
         if (savedInstanceState != null) {
             mIsImageLoaded = savedInstanceState.getBoolean(IS_IMAGE_LOADED_KEY);
             mIsSnackShowed = savedInstanceState.getBoolean(IS_SNACK_SHOWED_KEY);
@@ -58,23 +63,20 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
         final Intent startIntent = getIntent();
         mImageUrl = startIntent.getStringExtra(IMAGE_URL_EXTRA);
 
-        final ImageView imageDetailsView = findViewById(R.id.iv_image_details);
-        final ProgressBar imageLoadingIndicator = findViewById(R.id.pb_image_loading);
-
-        Picasso.get().load(mImageUrl).into(imageDetailsView, new Callback() {
+        Picasso.get().load(mImageUrl).into(mImageDetailsView, new Callback() {
             @Override
             public void onSuccess() {
                 mIsImageLoaded = true;
-                imageLoadingIndicator.setVisibility(View.INVISIBLE);
+                mImageLoadingIndicator.setVisibility(View.INVISIBLE);
                 supportInvalidateOptionsMenu();
             }
 
             @Override
             public void onError(Exception e) {
                 Timber.d(e.getLocalizedMessage());
-                imageLoadingIndicator.setVisibility(View.INVISIBLE);
+                mImageLoadingIndicator.setVisibility(View.INVISIBLE);
                 Picasso.get().load(R.drawable.error_placeholder)
-                        .into(imageDetailsView);
+                        .into(mImageDetailsView);
                 showLoadError();
             }
         });
