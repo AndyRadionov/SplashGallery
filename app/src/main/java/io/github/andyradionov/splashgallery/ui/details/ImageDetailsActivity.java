@@ -71,11 +71,12 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
 
             @Override
             public void onError(Exception e) {
-                //todo add Broken Image instead of loaded
-                Timber.d("+++=====================+++ " + e.getLocalizedMessage());
+                Timber.d(e.getLocalizedMessage());
+                imageLoadingIndicator.setVisibility(View.INVISIBLE);
+                Picasso.get().load(R.drawable.error_placeholder)
+                        .into(imageDetailsView);
+                showLoadError();
             }
-
-
         });
     }
 
@@ -146,6 +147,13 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
         if (!mIsSnackShowed) {
             mIsSnackShowed = true;
             Snacky.builder().setText("ERROR IMAGE SAVING").setActivity(this).error().show();
+        }
+    }
+
+    public void showLoadError() {
+        if (!mIsSnackShowed) {
+            mIsSnackShowed = true;
+            Snacky.builder().setText("ERROR IMAGE LOADING").setActivity(this).error().show();
         }
     }
 

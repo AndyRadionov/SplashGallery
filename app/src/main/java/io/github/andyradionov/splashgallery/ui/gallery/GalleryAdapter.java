@@ -94,8 +94,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
                         @Override
                         public void onError(Exception e) {
-                            //todo add Broken Image instead of loaded
-                            Timber.d("+++=====================+++ " + e.getLocalizedMessage());
+                            Timber.d(e.getLocalizedMessage());
+                            Picasso.get().load(R.drawable.error_placeholder)
+                                    .fit()
+                                    .centerCrop()
+                                    .into(galleryImage);
                         }
                     });
         }
