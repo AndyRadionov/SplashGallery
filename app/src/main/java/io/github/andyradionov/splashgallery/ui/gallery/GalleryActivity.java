@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.model.Image;
 import io.github.andyradionov.splashgallery.ui.about.AboutActivity;
 import io.github.andyradionov.splashgallery.ui.details.ImageDetailsActivity;
+import io.github.andyradionov.splashgallery.utils.NetworkUtils;
 
 /**
  * Main Application screen with Image gallery
@@ -40,6 +42,8 @@ public class GalleryActivity extends MvpAppCompatActivity implements
     @InjectPresenter GalleryPresenter mGalleryPresenter;
     @BindView(R.id.pb_gallery_loading) ProgressBar mLoadingIndicator;
     @BindView(R.id.rv_gallery_container) RecyclerView mGalleryContainer;
+    @BindView(R.id.iv_no_wifi) ImageView mNoInternetView;
+
     private PagingScrollListener mScrollListener;
     private GalleryAdapter mGalleryAdapter;
     private int mCurrentPage;
@@ -52,13 +56,12 @@ public class GalleryActivity extends MvpAppCompatActivity implements
 
         ButterKnife.bind(this);
 
+        mCurrentPage = 1;
+        mCurrentRequest = App.MAIN_GALLERY;
+
         setupRecycler();
-        if (savedInstanceState == null) {
-            mCurrentPage = 1;
-            mCurrentRequest = App.MAIN_GALLERY;
-            mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
-        }
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -77,6 +80,7 @@ public class GalleryActivity extends MvpAppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        restartSearch(mCurrentRequest);
     }
 
     @Override
@@ -146,14 +150,15 @@ public class GalleryActivity extends MvpAppCompatActivity implements
 
     @Override
     public void showImages(@NonNull final List<Image> images) {
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        setViewsVisibility(View.INVISIBLE, View.INVISIBLE, View.VISIBLE);
 
         mGalleryAdapter.updateData(images);
     }
 
     @Override
     public void showError() {
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        setViewsVisibility(View.INVISIBLE, View.INVISIBLE, View.INVISIBLE);
+
         Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
     }
 
@@ -164,7 +169,7 @@ public class GalleryActivity extends MvpAppCompatActivity implements
 
     @Override
     public void resetSearchState(String query) {
-        mLoadingIndicator.setVisibility(View.VISIBLE);
+        setViewsVisibility(View.VISIBLE, View.INVISIBLE, View.INVISIBLE);
         mScrollListener.resetState();
         mCurrentPage = 1;
         mCurrentRequest = query;
@@ -190,6 +195,17 @@ public class GalleryActivity extends MvpAppCompatActivity implements
     }
 
     private void restartSearch(String query) {
-        mGalleryPresenter.searchImages(query, mCurrentPage);
+        if (!NetworkUtils.isInternetAvailable(this)) {
+            setViewsVisibility(View.INVISIBLE, View.VISIBLE, View.INVISIBLE);
+        } else {
+            setViewsVisibility(View.VISIBLE, View.INVISIBLE, View.INVISIBLE);
+            mGalleryPresenter.searchImages(query, mCurrentPage);
+        }
+    }
+
+    private void setViewsVisibility(int loader, int internet, int container) {
+        mLoadingIndicator.setVisibility(loader);
+        mNoInternetView.setVisibility(internet);
+        mGalleryContainer.setVisibility(container);
     }
 }
