@@ -35,7 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:text="NO RESULTS"
+        android:fontFamily="@font/albertus"
+        android:text="@string/no_results"
         android:textSize="20sp"
         android:visibility="invisible" />
 </RelativeLayout>

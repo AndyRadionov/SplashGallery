@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -98,7 +97,7 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.action_save);
-        Drawable resIcon = getResources().getDrawable(android.R.drawable.ic_menu_save);
+        Drawable resIcon = getResources().getDrawable(R.drawable.ic_action_save);
 
         if (!mIsImageLoaded)
             resIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
@@ -133,7 +132,7 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
             } else {
                 if (!mIsSnackShowed) {
                     mIsSnackShowed = true;
-                    Snacky.builder().setText(R.string.request_permisson_text).setActivity(this).warning().show();
+                    Snacky.builder().setText(R.string.request_permission_text).setActivity(this).warning().show();
                 }
             }
         }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="request_permisson_text">Для сохранения изображения нужно предоставить права!</string>
+    <string name="request_permission_text">Для сохранения изображения нужно предоставить права!</string>
     <string name="image_saved_msg">ИЗОБРАЖЕНИЕ СОХРАНЕНО</string>
     <string name="error_image_save">ОШИБКА СОХРАНЕНИЯ ИЗОБРАЖЕНИЯ</string>
     <string name="error_image_load">ОШИБКА ЗАГРУЗКИ ИЗОБРАЖЕНИЯ</string>
@@ -9,4 +9,5 @@
     <string name="home_action_title">Домой</string>
     <string name="search_action_title">Поиск</string>
     <string name="about_action_title">О приложении</string>
+    <string name="no_results">НЕТ РЕЗУЛЬТАТА</string>
 </resources>

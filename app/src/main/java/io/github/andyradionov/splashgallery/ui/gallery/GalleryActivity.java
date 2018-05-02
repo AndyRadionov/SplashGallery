@@ -1,11 +1,15 @@
 package io.github.andyradionov.splashgallery.ui.gallery;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +30,7 @@ import io.github.andyradionov.splashgallery.model.Image;
 import io.github.andyradionov.splashgallery.ui.about.AboutActivity;
 import io.github.andyradionov.splashgallery.ui.details.ImageDetailsActivity;
 import io.github.andyradionov.splashgallery.utils.NetworkUtils;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Main Application screen with Image gallery
@@ -56,6 +61,14 @@ public class GalleryActivity extends MvpAppCompatActivity implements
 
         ButterKnife.bind(this);
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View v = inflater.inflate(R.layout.actionbar, null);
+            actionBar.setCustomView(v);
+        }
         mCurrentPage = 1;
         mCurrentRequest = App.MAIN_GALLERY;
 
@@ -138,6 +151,11 @@ public class GalleryActivity extends MvpAppCompatActivity implements
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override
