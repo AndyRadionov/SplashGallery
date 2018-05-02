@@ -3,7 +3,6 @@ package io.github.andyradionov.splashgallery.ui.gallery;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -12,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -43,6 +42,7 @@ public class GalleryActivity extends MvpAppCompatActivity implements
     @BindView(R.id.pb_gallery_loading) ProgressBar mLoadingIndicator;
     @BindView(R.id.rv_gallery_container) RecyclerView mGalleryContainer;
     @BindView(R.id.iv_no_wifi) ImageView mNoInternetView;
+    @BindView(R.id.tv_error) TextView mErrorView;
 
     private PagingScrollListener mScrollListener;
     private GalleryAdapter mGalleryAdapter;
@@ -61,7 +61,6 @@ public class GalleryActivity extends MvpAppCompatActivity implements
 
         setupRecycler();
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -150,30 +149,19 @@ public class GalleryActivity extends MvpAppCompatActivity implements
 
     @Override
     public void showImages(@NonNull final List<Image> images) {
-        setViewsVisibility(View.INVISIBLE, View.INVISIBLE, View.VISIBLE);
+        setViewsVisibility(View.VISIBLE, View.INVISIBLE, View.INVISIBLE, View.INVISIBLE);
 
         mGalleryAdapter.updateData(images);
     }
 
     @Override
     public void showError() {
-        setViewsVisibility(View.INVISIBLE, View.INVISIBLE, View.INVISIBLE);
-
-        Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
+        setViewsVisibility(View.INVISIBLE, View.INVISIBLE, View.INVISIBLE, View.VISIBLE);
     }
 
     @Override
     public void disableLoading() {
         mScrollListener.disableLoadingMore();
-    }
-
-    @Override
-    public void resetSearchState(String query) {
-        setViewsVisibility(View.VISIBLE, View.INVISIBLE, View.INVISIBLE);
-        mScrollListener.resetState();
-        mCurrentPage = 1;
-        mCurrentRequest = query;
-        mGalleryAdapter.clearData();
     }
 
     private void setupRecycler() {
@@ -196,16 +184,21 @@ public class GalleryActivity extends MvpAppCompatActivity implements
 
     private void restartSearch(String query) {
         if (!NetworkUtils.isInternetAvailable(this)) {
-            setViewsVisibility(View.INVISIBLE, View.VISIBLE, View.INVISIBLE);
+            setViewsVisibility(View.INVISIBLE, View.INVISIBLE, View.VISIBLE, View.INVISIBLE);
         } else {
-            setViewsVisibility(View.VISIBLE, View.INVISIBLE, View.INVISIBLE);
+            setViewsVisibility(View.INVISIBLE, View.VISIBLE, View.INVISIBLE, View.INVISIBLE);
+            mScrollListener.resetState();
+            mCurrentPage = 1;
+            mCurrentRequest = query;
+            mGalleryAdapter.clearData();
             mGalleryPresenter.searchImages(query, mCurrentPage);
         }
     }
 
-    private void setViewsVisibility(int loader, int internet, int container) {
+    private void setViewsVisibility(int container, int loader, int internet, int error) {
+        mGalleryContainer.setVisibility(container);
         mLoadingIndicator.setVisibility(loader);
         mNoInternetView.setVisibility(internet);
-        mGalleryContainer.setVisibility(container);
+        mErrorView.setVisibility(error);
     }
 }

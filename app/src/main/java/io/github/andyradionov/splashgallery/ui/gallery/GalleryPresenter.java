@@ -97,7 +97,6 @@ public class GalleryPresenter extends MvpPresenter<GalleryView> {
     }
 
     private void clearCache(@NonNull final String query) {
-        getViewState().resetSearchState(query);
         mCachedImages.clear();
         mCurrentSearchRequest = query;
         mCurrentPage = 1;

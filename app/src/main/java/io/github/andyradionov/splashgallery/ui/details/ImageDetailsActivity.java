@@ -131,7 +131,10 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mImageDetailsPresenter.saveImage(mImageUrl);
             } else {
-                Toast.makeText(this, "PERMISSIONS!", Toast.LENGTH_SHORT).show();
+                if (!mIsSnackShowed) {
+                    mIsSnackShowed = true;
+                    Snacky.builder().setText(R.string.request_permisson_text).setActivity(this).warning().show();
+                }
             }
         }
     }
@@ -140,7 +143,7 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
     public void showSaveSuccess() {
         if (!mIsSnackShowed) {
             mIsSnackShowed = true;
-            Snacky.builder().setText("IMAGE SAVED").setActivity(this).success().show();
+            Snacky.builder().setText(R.string.image_saved_msg).setActivity(this).success().show();
         }
     }
 
@@ -148,21 +151,21 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
     public void showSaveError() {
         if (!mIsSnackShowed) {
             mIsSnackShowed = true;
-            Snacky.builder().setText("ERROR IMAGE SAVING").setActivity(this).error().show();
+            Snacky.builder().setText(R.string.error_image_save).setActivity(this).error().show();
         }
     }
 
     public void showLoadError() {
         if (!mIsSnackShowed) {
             mIsSnackShowed = true;
-            Snacky.builder().setText("ERROR IMAGE LOADING").setActivity(this).error().show();
+            Snacky.builder().setText(R.string.error_image_load).setActivity(this).error().show();
         }
     }
 
     private Intent createImageShareIntent(final String url) {
         return ShareCompat.IntentBuilder.from(this)
                 .setType("text/plain")
-                .setChooserTitle("Look at this Image")
+                .setChooserTitle(R.string.share_message)
                 .setText(url)
                 .getIntent();
     }
