@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -157,7 +156,7 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
         }
     }
 
-    public void showLoadError() {
+    private void showLoadError() {
         if (!mIsSnackShowed) {
             mIsSnackShowed = true;
             Snacky.builder().setText(R.string.error_image_load).setActivity(this).error().show();

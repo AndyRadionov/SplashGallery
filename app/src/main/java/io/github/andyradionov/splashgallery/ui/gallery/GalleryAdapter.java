@@ -25,8 +25,8 @@ import timber.log.Timber;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
 
-    private List<Image> mImages;
-    private OnGalleryImageClickListener mClickListener;
+    private final List<Image> mImages;
+    private final OnGalleryImageClickListener mClickListener;
 
     public interface OnGalleryImageClickListener {
         void onClick(@NonNull String imageUrl);
@@ -67,7 +67,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     class GalleryViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        private CardView mGalleryCard;
+        private final CardView mGalleryCard;
 
         private GalleryViewHolder(CardView itemView) {
             super(itemView);

@@ -5,9 +5,7 @@ import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.widget.TextView;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,12 +20,10 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.pressKey;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withParent;
+import static android.support.test.espresso.matcher.ViewMatchers.withResourceName;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.allOf;
 
 /**
  * @author Andrey Radionov
@@ -57,7 +53,7 @@ public class GalleryActivityTest {
 
         onView(withId(R.id.action_search)).perform(click());
 
-        onView(ViewMatchers.withResourceName("search_src_text"))
+        onView(withResourceName("search_src_text"))
                 .perform(typeText("test"), pressKey(KeyEvent.KEYCODE_ENTER));
 
         onView(withId(R.id.rv_gallery_container)).check(matches(isDisplayed()));
@@ -68,7 +64,7 @@ public class GalleryActivityTest {
 
         onView(withId(R.id.action_search)).perform(click());
 
-        onView(ViewMatchers.withResourceName("search_src_text"))
+        onView(withResourceName("search_src_text"))
                 .perform(typeText("test"), pressKey(KeyEvent.KEYCODE_ENTER));
 
         onView(withId(R.id.action_home)).perform(click());

@@ -19,7 +19,7 @@ import timber.log.Timber;
 
 public class App extends Application {
 
-    public static final String BASE_URL = "https://api.unsplash.com/";
+    private static final String BASE_URL = "https://api.unsplash.com/";
     public static final String MAIN_GALLERY = "curated";
     public static final String IMG_FOLDER_NAME = "SplashGallery";
     public static final int PAGE_SIZE = 30;

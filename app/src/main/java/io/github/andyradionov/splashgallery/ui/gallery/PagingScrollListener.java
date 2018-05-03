@@ -24,9 +24,9 @@ public abstract class PagingScrollListener extends RecyclerView.OnScrollListener
     private boolean mLoading = true;
     private boolean mNeedsLoad = true;
     // Sets the starting page index
-    private int mStartingPageIndex = 1;
+    private final int mStartingPageIndex = 1;
 
-    private RecyclerView.LayoutManager mLayoutManager;
+    private final RecyclerView.LayoutManager mLayoutManager;
 
     public PagingScrollListener(@NonNull final GridLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;

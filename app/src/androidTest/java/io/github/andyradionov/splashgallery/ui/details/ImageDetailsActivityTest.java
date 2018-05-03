@@ -30,7 +30,7 @@ public class ImageDetailsActivityTest {
             "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
 
     @Rule
-    public IntentsTestRule<ImageDetailsActivity> mActivityTestRule =
+    public final IntentsTestRule<ImageDetailsActivity> mActivityTestRule =
             new IntentsTestRule<ImageDetailsActivity>(ImageDetailsActivity.class) {
                 @Override
                 protected Intent getActivityIntent() {
