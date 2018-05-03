@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
  * @author Andrey Radionov
@@ -36,12 +35,6 @@ public class App extends Application {
 
         sApiKey = "Client-ID " + getString(R.string.client_id);
         sImagesApi = createApi();
-
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/Oliver.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build()
-        );
     }
 
     /**

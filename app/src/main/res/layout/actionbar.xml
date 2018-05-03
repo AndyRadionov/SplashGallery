@@ -9,20 +9,19 @@
     tools:ignore="SpUsage,RtlHardcoded,UseCompoundDrawables">
 
     <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/logo_size"
+        android:layout_height="@dimen/logo_size"
         android:layout_gravity="center"
         android:contentDescription="@string/logo_description"
-        android:src="@drawable/splash_logo_white" />
+        android:src="@drawable/logo_white" />
 
     <TextView
         android:id="@+id/toolbar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="@dimen/bar_title_margin"
         android:fontFamily="@font/albertus"
-        android:text="@string/app_name"
         android:textColor="@android:color/white"
-        android:textSize="20dp" />
+        android:textSize="@dimen/bar_title_size" />
 </LinearLayout>

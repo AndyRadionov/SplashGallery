@@ -3,4 +3,7 @@
     <color name="colorPrimary">#9E9E9E</color>
     <color name="colorPrimaryDark">#616161</color>
     <color name="colorAccent">#607D8B</color>
+
+    <color name="bg_screen">#d4d4d4</color>
+    <color name="about_background_color">@color/bg_screen</color>
 </resources>

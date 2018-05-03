@@ -1,6 +1,5 @@
 package io.github.andyradionov.splashgallery.ui.gallery;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.util.List;
@@ -27,17 +24,17 @@ import butterknife.ButterKnife;
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.model.Image;
+import io.github.andyradionov.splashgallery.ui.base.BaseActivity;
 import io.github.andyradionov.splashgallery.ui.about.AboutActivity;
 import io.github.andyradionov.splashgallery.ui.details.ImageDetailsActivity;
 import io.github.andyradionov.splashgallery.utils.NetworkUtils;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Main Application screen with Image gallery
  *
  * @author Andrey Radionov
  */
-public class GalleryActivity extends MvpAppCompatActivity implements
+public class GalleryActivity extends BaseActivity implements
         GalleryAdapter.OnGalleryImageClickListener, GalleryView {
 
     private static final String CURRENT_QUERY_KEY = "current_query";
@@ -61,14 +58,8 @@ public class GalleryActivity extends MvpAppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(false);
-            LayoutInflater inflater = LayoutInflater.from(this);
-            View v = inflater.inflate(R.layout.actionbar, null);
-            actionBar.setCustomView(v);
-        }
+        setActionBar(getString(R.string.app_name));
+
         mCurrentPage = 1;
         mCurrentRequest = App.MAIN_GALLERY;
 
@@ -151,11 +142,6 @@ public class GalleryActivity extends MvpAppCompatActivity implements
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

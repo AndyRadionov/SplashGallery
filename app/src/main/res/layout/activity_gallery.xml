@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#d4d4d4"
-    tools:context=".ui.gallery.GalleryActivity">
+    android:background="@color/bg_screen"
+    tools:context=".ui.gallery.GalleryActivity"
+    tools:ignore="ContentDescription">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_gallery_container"
@@ -15,15 +16,15 @@
 
     <ProgressBar
         android:id="@+id/pb_gallery_loading"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
         android:layout_centerInParent="true"
         android:layout_gravity="center" />
 
     <ImageView
         android:id="@+id/iv_no_wifi"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="@dimen/no_internet_view_size"
+        android:layout_height="@dimen/no_internet_view_size"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:src="@drawable/no_wifi"
@@ -37,6 +38,6 @@
         android:layout_gravity="center"
         android:fontFamily="@font/albertus"
         android:text="@string/no_results"
-        android:textSize="20sp"
+        android:textSize="@dimen/error_text_size"
         android:visibility="invisible" />
 </RelativeLayout>

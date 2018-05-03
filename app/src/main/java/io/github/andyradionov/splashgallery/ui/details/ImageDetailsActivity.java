@@ -26,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.mateware.snacky.Snacky;
 import io.github.andyradionov.splashgallery.R;
+import io.github.andyradionov.splashgallery.ui.base.BaseActivity;
 import timber.log.Timber;
 
 /**
@@ -33,7 +34,7 @@ import timber.log.Timber;
  *
  * @author Andrey Radionov
  */
-public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageDetailsView {
+public class ImageDetailsActivity extends BaseActivity implements ImageDetailsView {
 
     private static final int REQUEST_STORAGE_PERMISSION = 42;
     private static final String IS_IMAGE_LOADED_KEY = "is_image_loaded";
@@ -53,6 +54,8 @@ public class ImageDetailsActivity extends MvpAppCompatActivity implements ImageD
         setContentView(R.layout.activity_image_details);
 
         ButterKnife.bind(this);
+
+        setActionBar(getString(R.string.app_name));
 
         if (savedInstanceState != null) {
             mIsImageLoaded = savedInstanceState.getBoolean(IS_IMAGE_LOADED_KEY);

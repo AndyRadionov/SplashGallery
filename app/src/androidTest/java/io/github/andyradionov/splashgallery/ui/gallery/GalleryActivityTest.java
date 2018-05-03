@@ -1,5 +1,6 @@
 package io.github.andyradionov.splashgallery.ui.gallery;
 
+import android.content.Context;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
@@ -93,14 +94,13 @@ public class GalleryActivityTest {
 
     @Test
     public void testClockAbout_OpenAboutActivity() {
-        //todo change to Title of About text
-        String about = "About";
+        Context context = getInstrumentation().getTargetContext();
+        String about = context.getString(R.string.about_title);
 
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        openActionBarOverflowOrOptionsMenu(context);
         onView(withText(about)).perform(click());
 
-        onView(allOf(isAssignableFrom(TextView.class),
-                withParent(isAssignableFrom(Toolbar.class))))
+        onView(withId(R.id.toolbar_title))
                 .check(matches(withText(about)));
     }
 

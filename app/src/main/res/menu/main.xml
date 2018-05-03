@@ -17,6 +17,6 @@
     <item
         android:id="@+id/action_about"
         android:orderInCategory="1"
-        android:title="@string/about_action_title"
+        android:title="@string/about_title"
         app:showAsAction="never" />
 </menu>
