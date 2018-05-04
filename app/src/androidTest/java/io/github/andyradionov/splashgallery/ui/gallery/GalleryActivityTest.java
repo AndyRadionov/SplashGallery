@@ -2,7 +2,6 @@ package io.github.andyradionov.splashgallery.ui.gallery;
 
 import android.content.Context;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.KeyEvent;
@@ -24,6 +23,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withResourceName;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static io.github.andyradionov.splashgallery.utils.TestUtils.*;
+import static io.github.andyradionov.splashgallery.utils.TestUtils.waitForSeconds;
 
 /**
  * @author Andrey Radionov
@@ -50,11 +51,10 @@ public class GalleryActivityTest {
 
     @Test
     public void testClickSearch_ContainerDisplayed() {
-
         onView(withId(R.id.action_search)).perform(click());
 
         onView(withResourceName("search_src_text"))
-                .perform(typeText("test"), pressKey(KeyEvent.KEYCODE_ENTER));
+                .perform(typeText(getCorrectSearchRequest()), pressKey(KeyEvent.KEYCODE_ENTER));
 
         onView(withId(R.id.rv_gallery_container)).check(matches(isDisplayed()));
     }
@@ -65,7 +65,7 @@ public class GalleryActivityTest {
         onView(withId(R.id.action_search)).perform(click());
 
         onView(withResourceName("search_src_text"))
-                .perform(typeText("test"), pressKey(KeyEvent.KEYCODE_ENTER));
+                .perform(typeText(getCorrectSearchRequest()), pressKey(KeyEvent.KEYCODE_ENTER));
 
         onView(withId(R.id.action_home)).perform(click());
 
@@ -98,13 +98,5 @@ public class GalleryActivityTest {
 
         onView(withId(R.id.toolbar_title))
                 .check(matches(withText(about)));
-    }
-
-    private void waitForSeconds(long time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }

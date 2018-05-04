@@ -5,7 +5,7 @@ import android.app.Application;
 import com.google.gson.Gson;
 
 import io.github.andyradionov.splashgallery.R;
-import io.github.andyradionov.splashgallery.network.ImagesApi;
+import io.github.andyradionov.splashgallery.model.network.ImagesApi;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;

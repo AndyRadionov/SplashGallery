@@ -1,10 +1,12 @@
-package io.github.andyradionov.splashgallery.ui.details;
+package io.github.andyradionov.splashgallery.presenter;
 
 import android.support.annotation.NonNull;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import io.github.andyradionov.splashgallery.ui.details.ImageDetailsView;
+import io.github.andyradionov.splashgallery.ui.details.ImageSaveCallback;
 import io.github.andyradionov.splashgallery.utils.ImageSaverUtils;
 
 /**

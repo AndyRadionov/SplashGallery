@@ -1,6 +1,5 @@
 package io.github.andyradionov.splashgallery.ui.gallery;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.andyradionov.splashgallery.R;
-import io.github.andyradionov.splashgallery.model.Image;
+import io.github.andyradionov.splashgallery.model.dto.Image;
 import timber.log.Timber;
 
 /**

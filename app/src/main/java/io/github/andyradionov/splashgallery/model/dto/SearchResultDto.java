@@ -1,10 +1,8 @@
-package io.github.andyradionov.splashgallery.network;
+package io.github.andyradionov.splashgallery.model.dto;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
-
-import io.github.andyradionov.splashgallery.model.Image;
 
 /**
  * DTO class for search result. It wraps List of {@link Image} and total pages number

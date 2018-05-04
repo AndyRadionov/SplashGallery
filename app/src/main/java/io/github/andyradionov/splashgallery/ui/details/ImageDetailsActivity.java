@@ -25,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.mateware.snacky.Snacky;
 import io.github.andyradionov.splashgallery.R;
+import io.github.andyradionov.splashgallery.presenter.ImageDetailsPresenter;
 import io.github.andyradionov.splashgallery.ui.base.BaseActivity;
 import timber.log.Timber;
 
@@ -40,7 +41,8 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
     private static final String IS_SNACK_SHOWED_KEY = "is_snack_showed";
     public static final String IMAGE_URL_EXTRA = "image_url";
 
-    @InjectPresenter ImageDetailsPresenter mImageDetailsPresenter;
+    @InjectPresenter
+    ImageDetailsPresenter mImageDetailsPresenter;
     @BindView(R.id.iv_image_details) ImageView mImageDetailsView;
     @BindView(R.id.pb_image_loading) ProgressBar mImageLoadingIndicator;
     private boolean mIsImageLoaded;

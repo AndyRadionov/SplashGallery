@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import io.github.andyradionov.splashgallery.R;
+import io.github.andyradionov.splashgallery.presenter.ImageDetailsPresenter;
+import io.github.andyradionov.splashgallery.utils.TestUtils;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -26,9 +28,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class ImageDetailsActivityTest {
 
-    private static final String GOOGLE_LOGO_URL =
-            "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
-
     @Rule
     public final IntentsTestRule<ImageDetailsActivity> mActivityTestRule =
             new IntentsTestRule<ImageDetailsActivity>(ImageDetailsActivity.class) {
@@ -36,7 +35,8 @@ public class ImageDetailsActivityTest {
                 protected Intent getActivityIntent() {
                     Intent intent = new Intent(InstrumentationRegistry.getTargetContext(),
                             ImageDetailsActivity.class);
-                    intent.putExtra(ImageDetailsActivity.IMAGE_URL_EXTRA, GOOGLE_LOGO_URL);
+                    intent.putExtra(ImageDetailsActivity.IMAGE_URL_EXTRA,
+                            TestUtils.getCorrectImageUlr());
                     return intent;
                 }
             };
@@ -46,7 +46,7 @@ public class ImageDetailsActivityTest {
         onView(withId(R.id.action_share)).perform(click());
 
         intended(allOf(hasAction(Intent.ACTION_SEND),
-                hasExtra(Intent.EXTRA_TEXT, GOOGLE_LOGO_URL)));
+                hasExtra(Intent.EXTRA_TEXT, TestUtils.getCorrectImageUlr())));
     }
 
     @Test

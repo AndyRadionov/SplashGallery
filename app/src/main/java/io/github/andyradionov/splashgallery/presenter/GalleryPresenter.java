@@ -1,4 +1,4 @@
-package io.github.andyradionov.splashgallery.ui.gallery;
+package io.github.andyradionov.splashgallery.presenter;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.andyradionov.splashgallery.app.App;
-import io.github.andyradionov.splashgallery.model.Image;
+import io.github.andyradionov.splashgallery.model.dto.Image;
+import io.github.andyradionov.splashgallery.ui.gallery.GalleryView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
