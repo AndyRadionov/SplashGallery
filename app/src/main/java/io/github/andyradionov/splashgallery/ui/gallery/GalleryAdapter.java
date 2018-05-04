@@ -80,8 +80,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
             final ImageView galleryImage = mGalleryCard.findViewById(R.id.iv_gallery_image);
 
-            galleryImage.setBackgroundColor(Color.parseColor(image.getColor()));
-
             Picasso.get()
                     .load(image.getSmallImage())
                     .placeholder(R.drawable.loading_indicator)

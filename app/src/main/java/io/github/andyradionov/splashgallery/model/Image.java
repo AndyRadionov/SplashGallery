@@ -8,7 +8,6 @@ package io.github.andyradionov.splashgallery.model;
 
 public class Image {
     private String id;
-    private String color;
     private Urls urls;
 
     private static class Urls {
@@ -18,10 +17,6 @@ public class Image {
 
     public String getId() {
         return id;
-    }
-
-    public String getColor() {
-        return color;
     }
 
     public String getSmallImage() {

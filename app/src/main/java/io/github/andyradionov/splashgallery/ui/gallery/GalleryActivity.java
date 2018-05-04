@@ -113,13 +113,14 @@ public class GalleryActivity extends BaseActivity implements
         searchAction.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                homeAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                homeAction.setVisible(false);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                homeAction.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                homeAction.setVisible(true);
+                invalidateOptionsMenu();
                 return true;
 
             }
@@ -163,6 +164,8 @@ public class GalleryActivity extends BaseActivity implements
 
     @Override
     public void disableLoading() {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+
         mScrollListener.disableLoadingMore();
     }
 
@@ -178,6 +181,7 @@ public class GalleryActivity extends BaseActivity implements
             @Override
             public void onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view) {
                 mCurrentPage = page;
+                mLoadingIndicator.setVisibility(View.VISIBLE);
                 mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
             }
         };

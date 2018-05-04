@@ -33,7 +33,6 @@ public class AboutActivity extends BaseActivity {
                 .addEmail("not.exist@mail.com")
                 .addWebsite("http://andyradionov.github.io/")
                 .addFacebook("andy.radionov")
-                .addPlayStore("io.github.andyradionov.splashgallery")
                 .addGitHub("andyradionov")
                 .addItem(getCopyRightsElement())
                 .create();
