@@ -1,5 +1,5 @@
 <resources>
-    <string name="request_permission_text">Для сохранения изображения нужно предоставить права!</string>
+    <string name="request_permission_text">Предоставить права для сохранения!</string>
     <string name="image_saved_msg">ИЗОБРАЖЕНИЕ СОХРАНЕНО</string>
     <string name="error_image_save">ОШИБКА СОХРАНЕНИЯ ИЗОБРАЖЕНИЯ</string>
     <string name="error_image_load">ОШИБКА ЗАГРУЗКИ ИЗОБРАЖЕНИЯ</string>

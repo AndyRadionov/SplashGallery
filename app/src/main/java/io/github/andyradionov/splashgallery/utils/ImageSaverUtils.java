@@ -74,8 +74,8 @@ public class ImageSaverUtils {
 
         final String imageFileName = String.format(FILE_NAME_FORMAT, DATE_FORMAT.format(new Date()));
         final File storageDir = new File(Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                + App.IMG_FOLDER_NAME);
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                + "/" + App.IMG_FOLDER_NAME);
 
         boolean success = true;
         if (!storageDir.exists()) {

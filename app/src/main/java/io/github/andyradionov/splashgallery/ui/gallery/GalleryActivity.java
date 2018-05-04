@@ -6,9 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -76,6 +78,7 @@ public class GalleryActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         mCurrentRequest = savedInstanceState.getString(CURRENT_QUERY_KEY);
         mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE_KEY);
+        setActionBarTitle(mCurrentRequest);
     }
 
     @Override
@@ -92,9 +95,11 @@ public class GalleryActivity extends BaseActivity implements
         final MenuItem homeAction = menu.findItem(R.id.action_home);
 
         SearchView searchView = (SearchView) searchAction.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                setActionBarTitle(query);
                 restartSearch(query);
 
                 if (!searchView.isIconified()) {
@@ -114,6 +119,7 @@ public class GalleryActivity extends BaseActivity implements
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 homeAction.setVisible(false);
+                searchView.setImeOptions(EditorInfo.IME_FLAG_FORCE_ASCII);
                 return true;
             }
 
@@ -122,7 +128,6 @@ public class GalleryActivity extends BaseActivity implements
                 homeAction.setVisible(true);
                 invalidateOptionsMenu();
                 return true;
-
             }
         });
 
@@ -134,6 +139,7 @@ public class GalleryActivity extends BaseActivity implements
         switch (item.getItemId()) {
             case R.id.action_home:
                 restartSearch(App.MAIN_GALLERY);
+                setActionBarTitle(getString(R.string.app_name));
                 return true;
             case R.id.action_about:
                 Intent intent = new Intent(this, AboutActivity.class);

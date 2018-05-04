@@ -16,6 +16,8 @@
         android:src="@drawable/logo_white" />
 
     <TextView
+        android:maxLines="1"
+        android:maxLength="@integer/max_title_length"
         android:id="@+id/toolbar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
