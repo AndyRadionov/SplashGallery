@@ -16,10 +16,6 @@ public class TestUtils {
         return GOOGLE_LOGO_URL;
     }
 
-    public static String getWrongImageUlr() {
-        return "wrong_url";
-    }
-
     public static String getCorrectSearchRequest() {
         return "nature";
     }

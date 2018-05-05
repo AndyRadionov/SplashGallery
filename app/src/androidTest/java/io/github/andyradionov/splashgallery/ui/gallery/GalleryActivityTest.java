@@ -89,7 +89,7 @@ public class GalleryActivityTest {
     }
 
     @Test
-    public void testClockAbout_OpenAboutActivity() {
+    public void testClickAbout_OpenAboutActivity() {
         Context context = getInstrumentation().getTargetContext();
         String about = context.getString(R.string.about_title);
 

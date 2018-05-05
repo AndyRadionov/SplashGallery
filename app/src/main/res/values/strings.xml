@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Splash Gallery</string>
+    <string name="app_name" translatable="false">Splash Gallery</string>
     <string name="request_permission_text">Provide saving permission!</string>
     <string name="image_saved_msg">IMAGE SAVED</string>
     <string name="error_image_save">ERROR IMAGE SAVING</string>
