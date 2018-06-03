@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -40,6 +41,7 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
     private static final String IS_IMAGE_LOADED_KEY = "is_image_loaded";
     private static final String IS_SNACK_SHOWED_KEY = "is_snack_showed";
     public static final String IMAGE_URL_EXTRA = "image_url";
+    public static final String IMAGE_ID_EXTRA = "image_id";
 
     @InjectPresenter
     ImageDetailsPresenter mImageDetailsPresenter;
@@ -63,8 +65,13 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
             mIsSnackShowed = savedInstanceState.getBoolean(IS_SNACK_SHOWED_KEY);
         }
 
-        final Intent startIntent = getIntent();
-        mImageUrl = startIntent.getStringExtra(IMAGE_URL_EXTRA);
+        final Bundle extras = getIntent().getExtras();
+        mImageUrl = extras.getString(IMAGE_URL_EXTRA);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            String imageTransitionName = extras.getString(IMAGE_ID_EXTRA);
+            mImageDetailsView.setTransitionName(imageTransitionName);
+        }
 
         Picasso.get().load(mImageUrl).into(mImageDetailsView, new Callback() {
             @Override

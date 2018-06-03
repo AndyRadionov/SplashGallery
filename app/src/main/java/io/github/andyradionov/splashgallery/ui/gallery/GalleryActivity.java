@@ -3,6 +3,8 @@ package io.github.andyradionov.splashgallery.ui.gallery;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -150,10 +152,17 @@ public class GalleryActivity extends BaseActivity implements
     }
 
     @Override
-    public void onClick(@NonNull String imageUrl) {
+    public void onClick(@NonNull String imageUrl, @NonNull String imageId, @NonNull ImageView sharedImageView) {
         Intent showImageIntent = new Intent(this, ImageDetailsActivity.class);
         showImageIntent.putExtra(ImageDetailsActivity.IMAGE_URL_EXTRA, imageUrl);
-        startActivity(showImageIntent);
+        showImageIntent.putExtra(ImageDetailsActivity.IMAGE_ID_EXTRA, imageId);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                sharedImageView,
+                ViewCompat.getTransitionName(sharedImageView));
+
+        startActivity(showImageIntent, options.toBundle());
     }
 
     @Override
