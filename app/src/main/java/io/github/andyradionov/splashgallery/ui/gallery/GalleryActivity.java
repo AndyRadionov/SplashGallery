@@ -80,7 +80,9 @@ public class GalleryActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         mCurrentRequest = savedInstanceState.getString(CURRENT_QUERY_KEY);
         mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE_KEY);
-        setActionBarTitle(mCurrentRequest);
+        String actionBarTitle = mCurrentRequest.equals(App.MAIN_GALLERY) ?
+                getString(R.string.app_name) : mCurrentRequest;
+        setActionBarTitle(actionBarTitle);
     }
 
     @Override
@@ -194,10 +196,12 @@ public class GalleryActivity extends BaseActivity implements
 
         mScrollListener = new PagingScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view) {
+            public boolean onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view) {
+                if (!NetworkUtils.isInternetAvailable(GalleryActivity.this)) return false;
                 mCurrentPage = page;
                 mLoadingIndicator.setVisibility(View.VISIBLE);
                 mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
+                return true;
             }
         };
         mGalleryContainer.addOnScrollListener(mScrollListener);

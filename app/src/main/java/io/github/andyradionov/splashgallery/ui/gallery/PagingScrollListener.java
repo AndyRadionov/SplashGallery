@@ -91,8 +91,8 @@ public abstract class PagingScrollListener extends RecyclerView.OnScrollListener
         // threshold should reflect how many total columns there are too
         if (!mLoading && (lastVisibleItemPosition + mVisibleThreshold) > totalItemCount) {
             mCurrentPage++;
-            onLoadMore(mCurrentPage, totalItemCount, view);
-            mLoading = true;
+            mLoading = onLoadMore(mCurrentPage, totalItemCount, view);
+            if (!mLoading) mCurrentPage--;
         }
     }
 
@@ -110,5 +110,5 @@ public abstract class PagingScrollListener extends RecyclerView.OnScrollListener
     }
 
     // Defines the process for actually mLoading more data based on page
-    public abstract void onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view);
+    public abstract boolean onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view);
 }
