@@ -88,7 +88,9 @@ public class GalleryActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        restartSearch(mCurrentRequest);
+        if (mGalleryContainer.getChildCount() == 0) {
+            restartSearch(mCurrentRequest);
+        }
     }
 
     @Override
