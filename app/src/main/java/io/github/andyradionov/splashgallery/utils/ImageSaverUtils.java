@@ -14,11 +14,13 @@ import com.squareup.picasso.Target;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import io.github.andyradionov.splashgallery.app.AppPreferences;
 import io.github.andyradionov.splashgallery.ui.details.ImageSaveCallback;
 import io.github.andyradionov.splashgallery.app.App;
 import timber.log.Timber;
@@ -45,13 +47,13 @@ public class ImageSaverUtils {
      * @param callback Callback that shows user result of image saving
      * @param imageUrl Url of Image that needs to be saved
      */
-    public static void saveImage(@NonNull final ImageSaveCallback callback, final String imageUrl) {
+    public synchronized static void saveImage(@NonNull final ImageSaveCallback callback, final String imageUrl) {
         Picasso.get()
                 .load(imageUrl)
                 .into(picassoImageTarget(callback));
     }
 
-    private static Target picassoImageTarget(@NonNull final ImageSaveCallback callback) {
+    private synchronized static Target picassoImageTarget(@NonNull final ImageSaveCallback callback) {
         Timber.d("picassoImageTarget");
         return new Target() {
             @Override
@@ -69,13 +71,13 @@ public class ImageSaverUtils {
         };
     }
 
-    private static boolean saveImage(@NonNull final Bitmap image) {
+    private synchronized static boolean saveImage(@NonNull final Bitmap image) {
         String savedImagePath;
 
         final String imageFileName = String.format(FILE_NAME_FORMAT, DATE_FORMAT.format(new Date()));
         final File storageDir = new File(Environment
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                + "/" + App.IMG_FOLDER_NAME);
+                + "/" + AppPreferences.IMG_FOLDER_NAME);
 
         boolean success = true;
         if (!storageDir.exists()) {
@@ -98,7 +100,7 @@ public class ImageSaverUtils {
         }
     }
 
-    private static void galleryAddPic(@NonNull final String imagePath) {
+    private synchronized static void galleryAddPic(@NonNull final String imagePath) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(imagePath);
         Uri contentUri = Uri.fromFile(f);
@@ -106,10 +108,10 @@ public class ImageSaverUtils {
     }
 
     private static class SaveImageAsyncTask extends AsyncTask<Bitmap, Void, Boolean> {
-        private final ImageSaveCallback callback;
+        private final WeakReference<ImageSaveCallback> callbackReference;
 
         SaveImageAsyncTask(ImageSaveCallback callback) {
-            this.callback = callback;
+            callbackReference = new WeakReference<>(callback);
         }
 
         @Override
@@ -122,6 +124,8 @@ public class ImageSaverUtils {
 
         @Override
         protected void onPostExecute(@NonNull final Boolean result) {
+            ImageSaveCallback callback = callbackReference.get();
+            if (callback == null) return;
             if (result) {
                 callback.showSuccess();
             } else {

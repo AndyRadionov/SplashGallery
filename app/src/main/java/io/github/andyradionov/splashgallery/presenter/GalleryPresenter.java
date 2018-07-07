@@ -12,6 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.github.andyradionov.splashgallery.app.App;
+import io.github.andyradionov.splashgallery.app.AppPreferences;
 import io.github.andyradionov.splashgallery.model.dto.Image;
 import io.github.andyradionov.splashgallery.model.network.ImagesApi;
 import io.github.andyradionov.splashgallery.ui.gallery.GalleryView;
@@ -35,7 +36,7 @@ public class GalleryPresenter extends MvpPresenter<GalleryView> {
 
     public GalleryPresenter() {
         Timber.d("Constructor call");
-        mCachedImages = new ArrayList<>(App.PAGE_SIZE);
+        mCachedImages = new ArrayList<>(AppPreferences.PAGE_SIZE);
         App.getAppComponent().inject(this);
     }
 
@@ -119,6 +120,7 @@ public class GalleryPresenter extends MvpPresenter<GalleryView> {
     }
 
     private void setMaxPage(final int totalPagesInRequest) {
-        mMaxPage = totalPagesInRequest >= App.MAX_PAGE_NUMBER ? App.MAX_PAGE_NUMBER : totalPagesInRequest;
+        mMaxPage = totalPagesInRequest >= AppPreferences.MAX_PAGE_NUMBER ?
+                AppPreferences.MAX_PAGE_NUMBER : totalPagesInRequest;
     }
 }

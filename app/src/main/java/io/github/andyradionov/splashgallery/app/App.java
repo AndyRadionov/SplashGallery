@@ -22,15 +22,6 @@ import timber.log.Timber;
 
 public class App extends Application {
 
-    public static final String BASE_URL = "https://api.unsplash.com/";
-    public static final String MAIN_GALLERY = "curated";
-    public static final String IMG_FOLDER_NAME = "SplashGallery";
-    public static final int PAGE_SIZE = 30;
-    public static final int MAX_PAGE_NUMBER = 5;
-
-    private static String sApiKey;
-    private static ImagesApi sImagesApi;
-
     private static AppComponent sAppComponent;
 
     @Override
@@ -38,8 +29,6 @@ public class App extends Application {
         super.onCreate();
         Timber.plant(new Timber.DebugTree());
 
-        sApiKey = "Client-ID " + getString(R.string.client_id);
-        sImagesApi = createApi();
         sAppComponent = DaggerAppComponent
                 .builder()
                 .contextModule(new ContextModule(this))
@@ -48,30 +37,5 @@ public class App extends Application {
 
     public static AppComponent getAppComponent() {
         return sAppComponent;
-    }
-
-    private static ImagesApi createApi() {
-        Timber.d("createApi");
-
-        final OkHttpClient httpClient = new OkHttpClient.Builder()
-                .addInterceptor(chain -> {
-                    Request original = chain.request();
-
-                    Request request = original.newBuilder()
-                            .header("Accept-Version", "v1")
-                            .header("Authorization", sApiKey)
-                            .method(original.method(), original.body())
-                            .build();
-
-                    return chain.proceed(request);
-                }).build();
-
-        return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(httpClient)
-                .build()
-                .create(ImagesApi.class);
     }
 }

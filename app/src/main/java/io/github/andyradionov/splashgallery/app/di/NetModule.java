@@ -12,6 +12,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.app.App;
+import io.github.andyradionov.splashgallery.app.AppPreferences;
 import io.github.andyradionov.splashgallery.model.network.ImagesApi;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,7 +34,7 @@ public class NetModule {
         Log.d(TAG, "provideImagesApi");
 
         return new Retrofit.Builder()
-                .baseUrl(App.BASE_URL)
+                .baseUrl(AppPreferences.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(httpClient)

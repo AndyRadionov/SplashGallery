@@ -24,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.app.App;
+import io.github.andyradionov.splashgallery.app.AppPreferences;
 import io.github.andyradionov.splashgallery.model.dto.Image;
 import io.github.andyradionov.splashgallery.presenter.GalleryPresenter;
 import io.github.andyradionov.splashgallery.ui.about.AboutActivity;
@@ -63,7 +64,7 @@ public class GalleryActivity extends BaseActivity implements
         setActionBar(getString(R.string.app_name));
 
         mCurrentPage = 1;
-        mCurrentRequest = App.MAIN_GALLERY;
+        mCurrentRequest = AppPreferences.MAIN_GALLERY;
 
         setupRecycler();
     }
@@ -80,7 +81,7 @@ public class GalleryActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         mCurrentRequest = savedInstanceState.getString(CURRENT_QUERY_KEY);
         mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE_KEY);
-        String actionBarTitle = mCurrentRequest.equals(App.MAIN_GALLERY) ?
+        String actionBarTitle = mCurrentRequest.equals(AppPreferences.MAIN_GALLERY) ?
                 getString(R.string.app_name) : mCurrentRequest;
         setActionBarTitle(actionBarTitle);
     }
@@ -144,7 +145,7 @@ public class GalleryActivity extends BaseActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home:
-                restartSearch(App.MAIN_GALLERY);
+                restartSearch(AppPreferences.MAIN_GALLERY);
                 setActionBarTitle(getString(R.string.app_name));
                 return true;
             case R.id.action_about:
