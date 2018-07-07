@@ -9,8 +9,11 @@ import com.arellomobile.mvp.MvpPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.model.dto.Image;
+import io.github.andyradionov.splashgallery.model.network.ImagesApi;
 import io.github.andyradionov.splashgallery.ui.gallery.GalleryView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -28,10 +31,12 @@ public class GalleryPresenter extends MvpPresenter<GalleryView> {
     private int mMaxPage;
     private String mCurrentSearchRequest;
     private Disposable mSubscription;
+    @Inject ImagesApi mImagesApi;
 
     public GalleryPresenter() {
         Timber.d("Constructor call");
         mCachedImages = new ArrayList<>(App.PAGE_SIZE);
+        App.getAppComponent().inject(this);
     }
 
     /**
@@ -60,7 +65,7 @@ public class GalleryPresenter extends MvpPresenter<GalleryView> {
         }
         if (isNewRequest(query)) clearCache(query);
 
-        mSubscription = App.getImagesApi()
+        mSubscription = mImagesApi
                 .searchImages(query, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

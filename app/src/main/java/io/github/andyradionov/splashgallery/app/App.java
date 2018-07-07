@@ -5,6 +5,9 @@ import android.app.Application;
 import com.google.gson.Gson;
 
 import io.github.andyradionov.splashgallery.R;
+import io.github.andyradionov.splashgallery.app.di.AppComponent;
+import io.github.andyradionov.splashgallery.app.di.ContextModule;
+import io.github.andyradionov.splashgallery.app.di.DaggerAppComponent;
 import io.github.andyradionov.splashgallery.model.network.ImagesApi;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -19,7 +22,7 @@ import timber.log.Timber;
 
 public class App extends Application {
 
-    private static final String BASE_URL = "https://api.unsplash.com/";
+    public static final String BASE_URL = "https://api.unsplash.com/";
     public static final String MAIN_GALLERY = "curated";
     public static final String IMG_FOLDER_NAME = "SplashGallery";
     public static final int PAGE_SIZE = 30;
@@ -28,6 +31,8 @@ public class App extends Application {
     private static String sApiKey;
     private static ImagesApi sImagesApi;
 
+    private static AppComponent sAppComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -35,14 +40,14 @@ public class App extends Application {
 
         sApiKey = "Client-ID " + getString(R.string.client_id);
         sImagesApi = createApi();
+        sAppComponent = DaggerAppComponent
+                .builder()
+                .contextModule(new ContextModule(this))
+                .build();
     }
 
-    /**
-     * Provides Retrofit Api for searching images
-     * @return ImagesApi
-     */
-    public static ImagesApi getImagesApi() {
-        return sImagesApi;
+    public static AppComponent getAppComponent() {
+        return sAppComponent;
     }
 
     private static ImagesApi createApi() {
