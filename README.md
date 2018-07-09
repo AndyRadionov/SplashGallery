@@ -12,7 +12,7 @@ Search Over 300,000 free photos brought to you by the world’s most generous co
  - Picasso
  - Butterknife
  - Snacky
- - PhotoView:2.1.3'
+ - PhotoView
  
  ### Installation
  - Put your Unsplash.com client id here -> res/values/settings/client_id
