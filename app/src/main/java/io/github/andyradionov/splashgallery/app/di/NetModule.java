@@ -14,6 +14,7 @@ import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.app.AppPreferences;
 import io.github.andyradionov.splashgallery.model.network.ImagesApi;
+import io.github.andyradionov.splashgallery.model.network.ImagesStore;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
@@ -26,6 +27,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module(includes = ContextModule.class)
 public class NetModule {
     private static final String TAG = ContextModule.class.getSimpleName();
+
+    @Provides
+    @NonNull
+    @Singleton
+    public ImagesStore provideImagesStore() {
+        Log.d(TAG, "provideImagesApi");
+
+        return new ImagesStore();
+    }
 
     @Provides
     @NonNull
