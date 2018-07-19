@@ -10,9 +10,9 @@ import io.github.andyradionov.splashgallery.model.dto.Image;
 
 public interface ImagesCallback {
 
-    void showError();
+    void onErrorLoading();
+
+    void onSuccessLoading(List<Image> images);
 
     void disableLoading();
-
-    void showImages(List<Image> images);
 }

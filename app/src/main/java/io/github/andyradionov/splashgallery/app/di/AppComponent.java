@@ -11,7 +11,7 @@ import io.github.andyradionov.splashgallery.presenter.GalleryPresenter;
  */
 
 @Singleton
-@Component(modules = {ContextModule.class, NetModule.class})
+@Component(modules = {NetModule.class})
 public interface AppComponent {
 
     void inject(GalleryPresenter presenter);

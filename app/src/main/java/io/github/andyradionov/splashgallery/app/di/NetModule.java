@@ -24,9 +24,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * @author Andrey Radionov
  */
-@Module(includes = ContextModule.class)
+@Module
 public class NetModule {
-    private static final String TAG = ContextModule.class.getSimpleName();
+    private static final String TAG = NetModule.class.getSimpleName();
 
     @Provides
     @NonNull
@@ -55,9 +55,9 @@ public class NetModule {
     @Provides
     @NonNull
     @Singleton
-    public OkHttpClient provideOkHttp(Context context) {
+    public OkHttpClient provideOkHttp() {
         Log.d(TAG, "provideOkHttp");
-        String apiKey = "Client-ID " + context.getString(R.string.client_id);
+        String apiKey = "Client-ID " + AppPreferences.API_KEY;
 
         return new OkHttpClient.Builder()
                 .addInterceptor(chain -> {

@@ -2,18 +2,9 @@ package io.github.andyradionov.splashgallery.app;
 
 import android.app.Application;
 
-import com.google.gson.Gson;
-
-import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.app.di.AppComponent;
-import io.github.andyradionov.splashgallery.app.di.ContextModule;
 import io.github.andyradionov.splashgallery.app.di.DaggerAppComponent;
-import io.github.andyradionov.splashgallery.model.network.ImagesApi;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+import io.github.andyradionov.splashgallery.app.di.NetModule;
 import timber.log.Timber;
 
 /**
@@ -31,7 +22,7 @@ public class App extends Application {
 
         sAppComponent = DaggerAppComponent
                 .builder()
-                .contextModule(new ContextModule(this))
+                .netModule(new NetModule())
                 .build();
     }
 

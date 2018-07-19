@@ -52,7 +52,7 @@ public class ImagesStore {
         }
 
         if (isRequestCached(query, page)) {
-            callback.showImages(mCachedImages);
+            callback.onSuccessLoading(mCachedImages);
             return;
         }
 
@@ -68,7 +68,7 @@ public class ImagesStore {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> {
                     Timber.d("doOnError: %s", throwable);
-                    callback.showError();
+                    callback.onErrorLoading();
                 })
                 .map(getSearchResultDto -> {
                     if (mMaxPage == 0) setMaxPage(getSearchResultDto.getTotalPages());
@@ -77,14 +77,14 @@ public class ImagesStore {
                 .subscribe(images -> {
                     Timber.d("subscribe result: %s", images);
                     if (images.isEmpty()) {
-                        callback.showError();
+                        callback.onErrorLoading();
                     } else {
                         cachePage(images, page);
-                        callback.showImages(images);
+                        callback.onSuccessLoading(images);
                     }
                 }, throwable -> {
                     Timber.d("subscribe failure: %s", throwable);
-                    callback.showError();
+                    callback.onErrorLoading();
                 });
     }
 

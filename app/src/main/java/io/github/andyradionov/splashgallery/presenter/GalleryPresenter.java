@@ -46,17 +46,17 @@ public class GalleryPresenter extends MvpPresenter<GalleryView> implements Image
     }
 
     @Override
-    public void showError() {
+    public void onErrorLoading() {
         getViewState().showError();
+    }
+
+    @Override
+    public void onSuccessLoading(List<Image> images) {
+        getViewState().showImages(images);
     }
 
     @Override
     public void disableLoading() {
         getViewState().disableLoading();
-    }
-
-    @Override
-    public void showImages(List<Image> images) {
-        getViewState().showImages(images);
     }
 }
