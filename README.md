@@ -1,6 +1,10 @@
 # SplashGallery
 Android App search Photos From Unsplash.com.
 
+<a href="https://play.google.com/store/apps/details?id=io.github.andyradionov.splashgallery">
+  <img src="https://play.google.com/intl/en_gb/badges/images/generic/en_badge_web_generic.png" width="200"> 
+</a>
+
 Search Over 300,000 free photos brought to you by the world’s most generous community of photographers from Unsplash.com. With a huge library of photos and thousands more being added each day, chances are you\'ll find a photo for you.
 
 ### Used Libraries
