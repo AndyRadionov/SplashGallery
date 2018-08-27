@@ -39,7 +39,6 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
 
     private static final int REQUEST_STORAGE_PERMISSION = 42;
     private static final String IS_IMAGE_LOADED_KEY = "is_image_loaded";
-    private static final String IS_SNACK_SHOWED_KEY = "is_snack_showed";
     public static final String IMAGE_URL_EXTRA = "image_url";
     public static final String IMAGE_ID_EXTRA = "image_id";
 
@@ -48,7 +47,6 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
     @BindView(R.id.iv_image_details) ImageView mImageDetailsView;
     @BindView(R.id.pb_image_loading) ProgressBar mImageLoadingIndicator;
     private boolean mIsImageLoaded;
-    private boolean mIsSnackShowed;
     private String mImageUrl;
 
     @Override
@@ -62,7 +60,6 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
 
         if (savedInstanceState != null) {
             mIsImageLoaded = savedInstanceState.getBoolean(IS_IMAGE_LOADED_KEY);
-            mIsSnackShowed = savedInstanceState.getBoolean(IS_SNACK_SHOWED_KEY);
         }
 
         final Bundle extras = getIntent().getExtras();
@@ -96,7 +93,6 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(IS_IMAGE_LOADED_KEY, mIsImageLoaded);
-        outState.putBoolean(IS_SNACK_SHOWED_KEY, mIsSnackShowed);
     }
 
     @Override
@@ -126,7 +122,6 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
                 startActivity(shareIntent);
                 return true;
             case R.id.action_save:
-                mIsSnackShowed = false;
                 checkPermissions();
                 return true;
         }
@@ -141,35 +136,23 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mImageDetailsPresenter.saveImage(mImageUrl);
             } else {
-                if (!mIsSnackShowed) {
-                    mIsSnackShowed = true;
-                    Snacky.builder().setText(R.string.request_permission_text).setActivity(this).warning().show();
-                }
+                Snacky.builder().setText(R.string.request_permission_text).setActivity(this).warning().show();
             }
         }
     }
 
     @Override
     public void showSaveSuccess() {
-        if (!mIsSnackShowed) {
-            mIsSnackShowed = true;
-            Snacky.builder().setText(R.string.image_saved_msg).setActivity(this).success().show();
-        }
+        Snacky.builder().setText(R.string.image_saved_msg).setActivity(this).success().show();
     }
 
     @Override
     public void showSaveError() {
-        if (!mIsSnackShowed) {
-            mIsSnackShowed = true;
-            Snacky.builder().setText(R.string.error_image_save).setActivity(this).error().show();
-        }
+        Snacky.builder().setText(R.string.error_image_save).setActivity(this).error().show();
     }
 
     private void showLoadError() {
-        if (!mIsSnackShowed) {
-            mIsSnackShowed = true;
-            Snacky.builder().setText(R.string.error_image_load).setActivity(this).error().show();
-        }
+        Snacky.builder().setText(R.string.error_image_load).setActivity(this).error().show();
     }
 
     private Intent createImageShareIntent(final String url) {
