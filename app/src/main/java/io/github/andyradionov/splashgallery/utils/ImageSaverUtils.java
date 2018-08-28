@@ -20,9 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import io.github.andyradionov.splashgallery.app.AppPreferences;
+import io.github.andyradionov.splashgallery.BuildConfig;
 import io.github.andyradionov.splashgallery.ui.details.ImageSaveCallback;
-import io.github.andyradionov.splashgallery.app.App;
 import timber.log.Timber;
 
 /**
@@ -77,7 +76,7 @@ public class ImageSaverUtils {
         final String imageFileName = String.format(FILE_NAME_FORMAT, DATE_FORMAT.format(new Date()));
         final File storageDir = new File(Environment
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                + "/" + AppPreferences.IMG_FOLDER_NAME);
+                + "/" + BuildConfig.IMG_FOLDER_NAME);
 
         boolean success = true;
         if (!storageDir.exists()) {

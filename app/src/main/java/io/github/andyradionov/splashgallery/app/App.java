@@ -2,9 +2,9 @@ package io.github.andyradionov.splashgallery.app;
 
 import android.app.Application;
 
-import io.github.andyradionov.splashgallery.app.di.AppComponent;
-import io.github.andyradionov.splashgallery.app.di.DaggerAppComponent;
-import io.github.andyradionov.splashgallery.app.di.NetModule;
+import io.github.andyradionov.splashgallery.di.AppComponent;
+import io.github.andyradionov.splashgallery.di.DaggerAppComponent;
+import io.github.andyradionov.splashgallery.di.NetModule;
 import timber.log.Timber;
 
 /**

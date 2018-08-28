@@ -5,7 +5,7 @@ import android.view.Gravity;
 import android.view.View;
 
 import io.github.andyradionov.splashgallery.R;
-import io.github.andyradionov.splashgallery.ui.base.BaseActivity;
+import io.github.andyradionov.splashgallery.ui.common.BaseActivity;
 import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
 

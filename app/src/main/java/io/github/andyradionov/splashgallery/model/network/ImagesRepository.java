@@ -8,8 +8,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.github.andyradionov.splashgallery.BuildConfig;
 import io.github.andyradionov.splashgallery.app.App;
-import io.github.andyradionov.splashgallery.app.AppPreferences;
 import io.github.andyradionov.splashgallery.model.dto.Image;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -20,19 +20,19 @@ import timber.log.Timber;
  * @author Andrey Radionov
  */
 
-public class ImagesStore {
+public class ImagesRepository {
 
     private final List<Image> mCachedImages;
     private int mCurrentPage;
     private int mMaxPage;
     private String mCurrentSearchRequest;
     private Disposable mSubscription;
-    @Inject ImagesApi mImagesApi;
+    private ImagesApi mImagesApi;
 
-    public ImagesStore() {
+    public ImagesRepository(ImagesApi imagesApi) {
         Timber.d("Constructor call");
-        mCachedImages = new ArrayList<>(AppPreferences.PAGE_SIZE);
-        App.getAppComponent().inject(this);
+        mCachedImages = new ArrayList<>(BuildConfig.PAGE_SIZE);
+        this.mImagesApi = imagesApi;
     }
 
     /**
@@ -63,7 +63,7 @@ public class ImagesStore {
         if (isNewRequest(query)) clearCache(query);
 
         mSubscription = mImagesApi
-                .searchImages(query, page)
+                .searchImages(BuildConfig.PAGE_SIZE, query, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> {
@@ -116,7 +116,7 @@ public class ImagesStore {
     }
 
     private void setMaxPage(final int totalPagesInRequest) {
-        mMaxPage = totalPagesInRequest >= AppPreferences.MAX_PAGE_NUMBER ?
-                AppPreferences.MAX_PAGE_NUMBER : totalPagesInRequest;
+        mMaxPage = totalPagesInRequest >= BuildConfig.MAX_PAGE_NUMBER ?
+                BuildConfig.MAX_PAGE_NUMBER : totalPagesInRequest;
     }
 }

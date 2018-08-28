@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import de.mateware.snacky.Snacky;
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.presenter.ImageDetailsPresenter;
-import io.github.andyradionov.splashgallery.ui.base.BaseActivity;
+import io.github.andyradionov.splashgallery.ui.common.BaseActivity;
 import timber.log.Timber;
 
 /**

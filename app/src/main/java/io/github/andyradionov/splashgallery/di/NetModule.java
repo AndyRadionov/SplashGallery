@@ -1,6 +1,5 @@
-package io.github.andyradionov.splashgallery.app.di;
+package io.github.andyradionov.splashgallery.di;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -10,11 +9,9 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.github.andyradionov.splashgallery.R;
-import io.github.andyradionov.splashgallery.app.App;
-import io.github.andyradionov.splashgallery.app.AppPreferences;
+import io.github.andyradionov.splashgallery.BuildConfig;
 import io.github.andyradionov.splashgallery.model.network.ImagesApi;
-import io.github.andyradionov.splashgallery.model.network.ImagesStore;
+import io.github.andyradionov.splashgallery.model.network.ImagesRepository;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
@@ -31,10 +28,10 @@ public class NetModule {
     @Provides
     @NonNull
     @Singleton
-    public ImagesStore provideImagesStore() {
-        Log.d(TAG, "provideImagesApi");
+    public ImagesRepository provideImagesRepository(ImagesApi imagesApi) {
+        Log.d(TAG, "provideImagesRepository");
 
-        return new ImagesStore();
+        return new ImagesRepository(imagesApi);
     }
 
     @Provides
@@ -44,7 +41,7 @@ public class NetModule {
         Log.d(TAG, "provideImagesApi");
 
         return new Retrofit.Builder()
-                .baseUrl(AppPreferences.BASE_URL)
+                .baseUrl(BuildConfig.API_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(httpClient)
@@ -57,7 +54,7 @@ public class NetModule {
     @Singleton
     public OkHttpClient provideOkHttp() {
         Log.d(TAG, "provideOkHttp");
-        String apiKey = "Client-ID " + AppPreferences.API_KEY;
+        String apiKey = "Client-ID " + BuildConfig.API_KEY;
 
         return new OkHttpClient.Builder()
                 .addInterceptor(chain -> {

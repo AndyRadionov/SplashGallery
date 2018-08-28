@@ -17,18 +17,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.andyradionov.splashgallery.BuildConfig;
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.app.App;
-import io.github.andyradionov.splashgallery.app.AppPreferences;
 import io.github.andyradionov.splashgallery.model.dto.Image;
 import io.github.andyradionov.splashgallery.presenter.GalleryPresenter;
 import io.github.andyradionov.splashgallery.ui.about.AboutActivity;
-import io.github.andyradionov.splashgallery.ui.base.BaseActivity;
+import io.github.andyradionov.splashgallery.ui.common.BaseActivity;
 import io.github.andyradionov.splashgallery.ui.details.ImageDetailsActivity;
 import io.github.andyradionov.splashgallery.utils.NetworkUtils;
 
@@ -43,7 +46,15 @@ public class GalleryActivity extends BaseActivity implements
     private static final String CURRENT_QUERY_KEY = "current_query";
     private static final String CURRENT_PAGE_KEY = "current_page";
 
-    @InjectPresenter GalleryPresenter mGalleryPresenter;
+    @Inject
+    @InjectPresenter
+    GalleryPresenter mGalleryPresenter;
+
+    @ProvidePresenter
+    GalleryPresenter providePresenter() {
+        return mGalleryPresenter;
+    }
+
     @BindView(R.id.pb_gallery_loading) ProgressBar mLoadingIndicator;
     @BindView(R.id.rv_gallery_container) RecyclerView mGalleryContainer;
     @BindView(R.id.iv_no_wifi) ImageView mNoInternetView;
@@ -59,12 +70,13 @@ public class GalleryActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
+        App.getAppComponent().inject(this);
         ButterKnife.bind(this);
 
         setActionBar(getString(R.string.app_name));
 
         mCurrentPage = 1;
-        mCurrentRequest = AppPreferences.MAIN_GALLERY;
+        mCurrentRequest = BuildConfig.API_MAIN_GALLERY;
 
         setupRecycler();
     }
@@ -81,7 +93,7 @@ public class GalleryActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         mCurrentRequest = savedInstanceState.getString(CURRENT_QUERY_KEY);
         mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE_KEY);
-        String actionBarTitle = mCurrentRequest.equals(AppPreferences.MAIN_GALLERY) ?
+        String actionBarTitle = mCurrentRequest.equals(BuildConfig.API_MAIN_GALLERY) ?
                 getString(R.string.app_name) : mCurrentRequest;
         setActionBarTitle(actionBarTitle);
     }
@@ -145,7 +157,7 @@ public class GalleryActivity extends BaseActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home:
-                restartSearch(AppPreferences.MAIN_GALLERY);
+                restartSearch(BuildConfig.API_MAIN_GALLERY);
                 setActionBarTitle(getString(R.string.app_name));
                 return true;
             case R.id.action_about:

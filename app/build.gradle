@@ -9,7 +9,12 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        buildConfigField 'String', "ApiKey", api_key
+        buildConfigField 'String', "API_KEY", api_key
+        buildConfigField 'String', "API_BASE_URL", api_base_url
+        buildConfigField 'String', "API_MAIN_GALLERY", api_main_gallery
+        buildConfigField 'String', "IMG_FOLDER_NAME", img_folder_name
+        buildConfigField 'Integer', "PAGE_SIZE", request_page_size
+        buildConfigField 'Integer', "MAX_PAGE_NUMBER", max_page_number
     }
     buildTypes {
         release {
