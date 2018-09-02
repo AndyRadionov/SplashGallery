@@ -5,11 +5,15 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import io.github.andyradionov.splashgallery.BuildConfig;
+import io.github.andyradionov.splashgallery.app.TLSSocketFactory;
 import io.github.andyradionov.splashgallery.model.network.ImagesApi;
 import io.github.andyradionov.splashgallery.model.network.ImagesRepository;
 import okhttp3.OkHttpClient;
@@ -17,19 +21,19 @@ import okhttp3.Request;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 /**
  * @author Andrey Radionov
  */
 @Module
 public class NetModule {
-    private static final String TAG = NetModule.class.getSimpleName();
 
     @Provides
     @NonNull
     @Singleton
     public ImagesRepository provideImagesRepository(ImagesApi imagesApi) {
-        Log.d(TAG, "provideImagesRepository");
+        Timber.d("provideImagesRepository");
 
         return new ImagesRepository(imagesApi);
     }
@@ -38,7 +42,7 @@ public class NetModule {
     @NonNull
     @Singleton
     public ImagesApi provideImagesApi(OkHttpClient httpClient) {
-        Log.d(TAG, "provideImagesApi");
+        Timber.d("provideImagesApi");
 
         return new Retrofit.Builder()
                 .baseUrl(BuildConfig.API_BASE_URL)
@@ -52,11 +56,25 @@ public class NetModule {
     @Provides
     @NonNull
     @Singleton
-    public OkHttpClient provideOkHttp() {
-        Log.d(TAG, "provideOkHttp");
+    public OkHttpClient.Builder provideOkHttpSSLBuilder() {
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        try {
+            clientBuilder = new OkHttpClient.Builder()
+                    .sslSocketFactory(new TLSSocketFactory());
+        } catch (KeyManagementException | NoSuchAlgorithmException e) {
+            Timber.d("provideOkHttp: %s", e.toString());
+        }
+        return clientBuilder;
+    }
+
+    @Provides
+    @NonNull
+    @Singleton
+    public OkHttpClient provideOkHttp(OkHttpClient.Builder clientBuilder) {
+        Timber.d("provideOkHttp");
         String apiKey = "Client-ID " + BuildConfig.API_KEY;
 
-        return new OkHttpClient.Builder()
+        return clientBuilder
                 .addInterceptor(chain -> {
                     Request original = chain.request();
 
