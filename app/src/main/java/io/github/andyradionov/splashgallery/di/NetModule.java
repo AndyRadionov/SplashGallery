@@ -69,5 +69,4 @@ public class NetModule {
                     return chain.proceed(request);
                 }).build();
     }
-
 }

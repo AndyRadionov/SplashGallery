@@ -67,10 +67,10 @@ public class GalleryActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        App.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        App.getAppComponent().inject(this);
         ButterKnife.bind(this);
 
         setActionBar(getString(R.string.app_name));
