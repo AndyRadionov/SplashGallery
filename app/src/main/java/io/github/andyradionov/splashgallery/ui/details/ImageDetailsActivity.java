@@ -19,11 +19,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dagger.android.AndroidInjection;
 import de.mateware.snacky.Snacky;
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.presenter.ImageDetailsPresenter;
@@ -42,15 +47,25 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
     public static final String IMAGE_URL_EXTRA = "image_url";
     public static final String IMAGE_ID_EXTRA = "image_id";
 
+    @Inject
     @InjectPresenter
     ImageDetailsPresenter mImageDetailsPresenter;
+
+    @ProvidePresenter
+    ImageDetailsPresenter providePresenter() {
+        return mImageDetailsPresenter;
+    }
+
     @BindView(R.id.iv_image_details) ImageView mImageDetailsView;
     @BindView(R.id.pb_image_loading) ProgressBar mImageLoadingIndicator;
     private boolean mIsImageLoaded;
     private String mImageUrl;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
 
@@ -142,6 +157,11 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
                 Snacky.builder().setText(R.string.request_permission_text).setActivity(this).warning().show();
             }
         }
+    }
+
+    @OnClick(R.id.btn_set_as_wallpaper)
+    public void onSetAsWallpaperClick(View view) {
+        mImageDetailsPresenter.setWallpaper(mImageUrl);
     }
 
     @Override

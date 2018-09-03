@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 import io.github.andyradionov.splashgallery.app.App;
+import io.github.andyradionov.splashgallery.ui.details.ImageDetailsActivity;
 import io.github.andyradionov.splashgallery.ui.gallery.GalleryActivity;
 import okhttp3.OkHttpClient;
 
@@ -15,7 +16,7 @@ import okhttp3.OkHttpClient;
  */
 
 @Singleton
-@Component(modules = {ActivityBuilder.class, NetModule.class})
+@Component(modules = {ActivityBuilder.class, ImagesModule.class, NetModule.class})
 public interface AppComponent {
 
     OkHttpClient.Builder getOkHttpClientBuilder();
@@ -23,6 +24,8 @@ public interface AppComponent {
     void inject(App app);
 
     void inject(GalleryActivity galleryActivity);
+
+    void inject(ImageDetailsActivity detailsActivity);
 
     @Component.Builder
     interface Builder {

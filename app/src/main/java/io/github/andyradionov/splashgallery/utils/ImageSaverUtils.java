@@ -1,5 +1,7 @@
 package io.github.andyradionov.splashgallery.utils;
 
+import android.app.WallpaperManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -13,6 +15,7 @@ import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
@@ -21,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import io.github.andyradionov.splashgallery.BuildConfig;
+import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.ui.details.ImageSaveCallback;
 import timber.log.Timber;
 
@@ -36,7 +40,9 @@ public class ImageSaverUtils {
             new SimpleDateFormat("ddMMyyyy_HHmmss", Locale.ROOT);
     private static final String FILE_NAME_FORMAT = "IMG_%s.jpg";
 
-    private ImageSaverUtils() {
+    private Context context;
+    public ImageSaverUtils(Context context) {
+        this.context = context;
     }
 
     /**
@@ -46,13 +52,43 @@ public class ImageSaverUtils {
      * @param callback Callback that shows user result of image saving
      * @param imageUrl Url of Image that needs to be saved
      */
-    public synchronized static void saveImage(@NonNull final ImageSaveCallback callback, final String imageUrl) {
+    public synchronized void saveImage(@NonNull final ImageSaveCallback callback, final String imageUrl) {
         Picasso.get()
                 .load(imageUrl)
                 .into(picassoImageTarget(callback));
     }
 
-    private synchronized static Target picassoImageTarget(@NonNull final ImageSaveCallback callback) {
+    public synchronized void setWallpaper(@NonNull final ImageSaveCallback callback, final String imageUrl) {
+        Picasso.get()
+                .load(imageUrl)
+                .into(picassoWallpaperTarget(callback));
+    }
+
+    private synchronized Target picassoWallpaperTarget(@NonNull final ImageSaveCallback callback) {
+        Timber.d("picassoImageTarget");
+        return new Target() {
+            @Override
+            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                try {
+                    WallpaperManager.getInstance(context).setBitmap(bitmap);
+                    callback.showSuccess();
+                } catch (IOException e) {
+                    callback.showError();
+                }
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                callback.showError();
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            }
+        };
+    }
+
+    private synchronized Target picassoImageTarget(@NonNull final ImageSaveCallback callback) {
         Timber.d("picassoImageTarget");
         return new Target() {
             @Override
@@ -62,6 +98,7 @@ public class ImageSaverUtils {
 
             @Override
             public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                callback.showError();
             }
 
             @Override
@@ -70,7 +107,7 @@ public class ImageSaverUtils {
         };
     }
 
-    private synchronized static boolean saveImage(@NonNull final Bitmap image) {
+    private static synchronized boolean saveImage(@NonNull final Bitmap image) {
         String savedImagePath;
 
         final String imageFileName = String.format(FILE_NAME_FORMAT, DATE_FORMAT.format(new Date()));
@@ -99,7 +136,7 @@ public class ImageSaverUtils {
         }
     }
 
-    private synchronized static void galleryAddPic(@NonNull final String imagePath) {
+    private static synchronized void galleryAddPic(@NonNull final String imagePath) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(imagePath);
         Uri contentUri = Uri.fromFile(f);
