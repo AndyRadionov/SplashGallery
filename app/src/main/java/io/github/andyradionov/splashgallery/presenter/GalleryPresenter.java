@@ -5,22 +5,24 @@ import android.support.annotation.NonNull;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-import io.github.andyradionov.splashgallery.model.dto.Image;
-import io.github.andyradionov.splashgallery.model.network.ImagesCallback;
-import io.github.andyradionov.splashgallery.model.network.ImagesRepository;
+import io.github.andyradionov.splashgallery.BuildConfig;
+import io.github.andyradionov.splashgallery.data.network.ImagesRepository;
 import io.github.andyradionov.splashgallery.ui.gallery.GalleryView;
+import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
 
 /**
  * @author Andrey Radionov
  */
 @InjectViewState
-public class GalleryPresenter extends MvpPresenter<GalleryView> implements ImagesCallback {
+public class GalleryPresenter extends MvpPresenter<GalleryView> {
 
     private ImagesRepository imagesRepository;
+    private Disposable mSubscription;
+
+    private int mMaxPage;
 
     @Inject
     public GalleryPresenter(ImagesRepository imagesRepository) {
@@ -31,24 +33,57 @@ public class GalleryPresenter extends MvpPresenter<GalleryView> implements Image
      * Searching images and caching previous result
      *
      * @param query User search query input or default gallery
-     * @param page Page that needs to be load
+     * @param page  Page that needs to be load
      */
     public final void searchImages(@NonNull final String query, final int page) {
-        imagesRepository.searchImages(query, page, this);
+        if (isMaxPage(page)) {
+            getViewState().disableLoading();
+            return;
+        }
+
+        unsubscribe();
+
+        mSubscription = imagesRepository.searchImages(query, page)
+                .doOnError(throwable -> {
+                    Timber.d(throwable, "doOnError");
+                    getViewState().showError();
+                })
+                .map(getSearchResultDto -> {
+                    if (mMaxPage == 0) setMaxPage(getSearchResultDto.getTotalPages());
+                    return getSearchResultDto.getResults();
+                })
+                .subscribe(images -> {
+                    Timber.d("subscribe result: %s", images);
+                    if (images.isEmpty()) {
+                        getViewState();
+                    } else {
+                        getViewState().showImages(images);
+                    }
+                }, throwable -> {
+                    Timber.d(throwable, "subscribe failure");
+                    getViewState().showError();
+                });
     }
 
     @Override
-    public void onErrorLoading() {
-        getViewState().showError();
+    public void onDestroy() {
+        super.onDestroy();
+        unsubscribe();
     }
 
-    @Override
-    public void onSuccessLoading(List<Image> images) {
-        getViewState().showImages(images);
+    private void unsubscribe() {
+        if (mSubscription != null && !mSubscription.isDisposed()) {
+            mSubscription.dispose();
+            mSubscription = null;
+        }
     }
 
-    @Override
-    public void disableLoading() {
-        getViewState().disableLoading();
+    private boolean isMaxPage(final int page) {
+        return (mMaxPage != 0 && page > mMaxPage);
+    }
+
+    private void setMaxPage(final int totalPagesInRequest) {
+        mMaxPage = totalPagesInRequest >= BuildConfig.MAX_PAGE_NUMBER ?
+                BuildConfig.MAX_PAGE_NUMBER : totalPagesInRequest;
     }
 }

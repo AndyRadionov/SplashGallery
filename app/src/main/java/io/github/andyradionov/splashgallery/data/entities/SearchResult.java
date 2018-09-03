@@ -1,4 +1,4 @@
-package io.github.andyradionov.splashgallery.model.dto;
+package io.github.andyradionov.splashgallery.data.entities;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @author Andrey Radionov
  */
 
-public class SearchResultDto {
+public class SearchResult {
     private List<Image> results;
     @SerializedName("total_pages") private int totalPages;
 
@@ -24,7 +24,7 @@ public class SearchResultDto {
 
     @Override
     public String toString() {
-        return "SearchResultDto{" +
+        return "SearchResult{" +
                 "results=" + results +
                 ", totalPages=" + totalPages +
                 '}';

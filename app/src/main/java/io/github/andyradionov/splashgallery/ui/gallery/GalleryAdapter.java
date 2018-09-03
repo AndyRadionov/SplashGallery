@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.andyradionov.splashgallery.R;
-import io.github.andyradionov.splashgallery.model.dto.Image;
+import io.github.andyradionov.splashgallery.data.entities.Image;
 import timber.log.Timber;
 
 /**

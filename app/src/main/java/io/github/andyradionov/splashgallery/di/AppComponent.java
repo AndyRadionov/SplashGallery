@@ -1,10 +1,12 @@
 package io.github.andyradionov.splashgallery.di;
 
+import android.app.Application;
+
 import javax.inject.Singleton;
 
+import dagger.BindsInstance;
 import dagger.Component;
-import io.github.andyradionov.splashgallery.model.network.ImagesRepository;
-import io.github.andyradionov.splashgallery.presenter.GalleryPresenter;
+import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.ui.gallery.GalleryActivity;
 import okhttp3.OkHttpClient;
 
@@ -13,10 +15,20 @@ import okhttp3.OkHttpClient;
  */
 
 @Singleton
-@Component(modules = {NetModule.class})
+@Component(modules = {ActivityBuilder.class, NetModule.class})
 public interface AppComponent {
 
     OkHttpClient.Builder getOkHttpClientBuilder();
 
+    void inject(App app);
+
     void inject(GalleryActivity galleryActivity);
+
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        AppComponent.Builder application(Application app);
+
+        AppComponent build();
+    }
 }

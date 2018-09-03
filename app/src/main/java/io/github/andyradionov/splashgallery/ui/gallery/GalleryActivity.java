@@ -25,10 +25,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 import io.github.andyradionov.splashgallery.BuildConfig;
 import io.github.andyradionov.splashgallery.R;
-import io.github.andyradionov.splashgallery.app.App;
-import io.github.andyradionov.splashgallery.model.dto.Image;
+import io.github.andyradionov.splashgallery.data.entities.Image;
 import io.github.andyradionov.splashgallery.presenter.GalleryPresenter;
 import io.github.andyradionov.splashgallery.ui.about.AboutActivity;
 import io.github.andyradionov.splashgallery.ui.common.BaseActivity;
@@ -67,7 +67,7 @@ public class GalleryActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        App.getAppComponent().inject(this);
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
