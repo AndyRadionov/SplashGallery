@@ -45,6 +45,7 @@ public class GalleryActivity extends BaseActivity implements
 
     private static final String CURRENT_QUERY_KEY = "current_query";
     private static final String CURRENT_PAGE_KEY = "current_page";
+    private static final String LIST_POSITION_KEY = "list_position";
 
     @Inject
     @InjectPresenter
@@ -64,6 +65,7 @@ public class GalleryActivity extends BaseActivity implements
     private GalleryAdapter mGalleryAdapter;
     private int mCurrentPage;
     private String mCurrentRequest;
+    private int mListPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,9 @@ public class GalleryActivity extends BaseActivity implements
         super.onSaveInstanceState(outState);
         outState.putString(CURRENT_QUERY_KEY, mCurrentRequest);
         outState.putInt(CURRENT_PAGE_KEY, mCurrentPage);
+        mListPosition = ((GridLayoutManager) mGalleryContainer.getLayoutManager())
+                .findFirstVisibleItemPosition();
+        outState.putInt(LIST_POSITION_KEY, mListPosition);
     }
 
     @Override
@@ -93,6 +98,8 @@ public class GalleryActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         mCurrentRequest = savedInstanceState.getString(CURRENT_QUERY_KEY);
         mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE_KEY);
+        mListPosition = savedInstanceState.getInt(LIST_POSITION_KEY);
+        mGalleryContainer.scrollToPosition(mListPosition);
         String actionBarTitle = mCurrentRequest.equals(BuildConfig.API_MAIN_GALLERY) ?
                 getString(R.string.app_name) : mCurrentRequest;
         setActionBarTitle(actionBarTitle);
@@ -101,7 +108,7 @@ public class GalleryActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (mGalleryContainer.getChildCount() == 0) {
+        if (mGalleryAdapter.getItemCount() == 0) {
             restartSearch(mCurrentRequest);
         }
     }
@@ -227,6 +234,7 @@ public class GalleryActivity extends BaseActivity implements
             setViewsVisibility(View.INVISIBLE, View.INVISIBLE, View.VISIBLE, View.INVISIBLE);
         } else {
             setViewsVisibility(View.INVISIBLE, View.VISIBLE, View.INVISIBLE, View.INVISIBLE);
+            mListPosition = 0;
             mScrollListener.resetState();
             mCurrentPage = 1;
             mCurrentRequest = query;
