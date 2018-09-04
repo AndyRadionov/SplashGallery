@@ -1,6 +1,7 @@
 package io.github.andyradionov.splashgallery.ui.details;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -12,12 +13,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -57,12 +60,15 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
         return mImageDetailsPresenter;
     }
 
-    @BindView(R.id.iv_image_details) ImageView mImageDetailsView;
-    @BindView(R.id.pb_image_loading) ProgressBar mImageLoadingIndicator;
-    @BindView(R.id.btn_set_as_wallpaper) TextView mSetWallpaperButton;
+    @BindView(R.id.iv_image_details)
+    ImageView mImageDetailsView;
+    @BindView(R.id.pb_image_loading)
+    ProgressBar mImageLoadingIndicator;
+    @BindView(R.id.btn_set_as_wallpaper)
+    TextView mSetWallpaperButton;
+    private AlertDialog mSetWallpaperDialog;
     private boolean mIsImageLoaded;
     private String mImageUrl;
-
 
 
     @Override
@@ -164,7 +170,7 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
 
     @OnClick(R.id.btn_set_as_wallpaper)
     public void onSetAsWallpaperClick(View view) {
-        mImageDetailsPresenter.setWallpaper(mImageUrl);
+        mImageDetailsPresenter.showSetWallpaperDialog();
     }
 
     @Override
@@ -175,6 +181,28 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
     @Override
     public void showSaveError(String message) {
         Snacky.builder().setText(message).setActivity(this).error().show();
+    }
+
+    @Override
+    public void showSetWallpaperDialog() {
+        mSetWallpaperDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.set_wallpaper_message)
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.yes,
+                        (dialog, id) -> {
+                            dialog.cancel();
+                            mImageDetailsPresenter.setWallpaper(mImageUrl);
+                        })
+                .setNegativeButton(android.R.string.no,
+                        (dialog, which) -> mImageDetailsPresenter.hideSetWallpaperDialog())
+                .show();
+    }
+
+    @Override
+    public void hideSetWallpaperDialog() {
+        if (mSetWallpaperDialog != null) {
+            mSetWallpaperDialog.dismiss();
+        }
     }
 
     private void showLoadError() {

@@ -17,4 +17,5 @@
     <string name="connect_with_us_title">Connect with us</string>
     <string name="about_description">Search Over 300,000 free photos brought to you by the world’s most generous community of photographers from Unsplash.com. With a huge library of photos and thousands more being added each day, chances are you\'ll find a photo for you.</string>
     <string name="set_as_wallpaper">Set as wallpaper</string>
+    <string name="set_wallpaper_message">Confirm setting wallpaper</string>
 </resources>

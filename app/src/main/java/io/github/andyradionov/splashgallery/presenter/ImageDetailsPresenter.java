@@ -33,6 +33,14 @@ public class ImageDetailsPresenter extends MvpPresenter<ImageDetailsView>
         mImageSaverUtils.setWallpaper(this, imageUrl);
     }
 
+    public void showSetWallpaperDialog() {
+        getViewState().showSetWallpaperDialog();
+    }
+
+    public void hideSetWallpaperDialog() {
+        getViewState().hideSetWallpaperDialog();
+    }
+
     @Override
     public void showSuccess(String message) {
         getViewState().showSaveSuccess(message);

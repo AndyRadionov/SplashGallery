@@ -3,7 +3,7 @@
     <string name="image_saved_msg">ИЗОБРАЖЕНИЕ СОХРАНЕНО</string>
     <string name="error_image_save">ОШИБКА СОХРАНЕНИЯ ИЗОБРАЖЕНИЯ</string>
     <string name="error_image_load">ОШИБКА ЗАГРУЗКИ ИЗОБРАЖЕНИЯ</string>
-    <string name="wallpaper_set_msg">ОБОИ УСТНАНОВЛЕНЫ</string>
+    <string name="wallpaper_set_msg">ОБОИ УСТАНОВЛЕНЫ</string>
     <string name="error_wallpaper_set">ОШИБКА УСТАНОВКИ ОБОЕВ</string>
     <string name="share_message">Посмотри на эту классную картинку!</string>
     <string name="share_action_title">Поделиться</string>
@@ -15,4 +15,5 @@
     <string name="about_description">Поиск Более 300 000 бесплатных фотографий, представленных вам самым щедрым сообществом фотографов из Unsplash.com. С огромной библиотекой фотографий и тысячами других добавляемых каждый день, скорее всего, вы найдете для себя фото.</string>
     <string name="connect_with_us_title">Связаться с нами</string>
     <string name="set_as_wallpaper">Установить обои</string>
+    <string name="set_wallpaper_message">Подтвердите установку обоев</string>
 </resources>
