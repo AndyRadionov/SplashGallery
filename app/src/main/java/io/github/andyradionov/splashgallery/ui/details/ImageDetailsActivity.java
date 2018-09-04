@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -58,6 +59,7 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
 
     @BindView(R.id.iv_image_details) ImageView mImageDetailsView;
     @BindView(R.id.pb_image_loading) ProgressBar mImageLoadingIndicator;
+    @BindView(R.id.btn_set_as_wallpaper) TextView mSetWallpaperButton;
     private boolean mIsImageLoaded;
     private String mImageUrl;
 
@@ -90,6 +92,7 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
             public void onSuccess() {
                 mIsImageLoaded = true;
                 mImageLoadingIndicator.setVisibility(View.INVISIBLE);
+                mSetWallpaperButton.setEnabled(true);
                 supportInvalidateOptionsMenu();
             }
 

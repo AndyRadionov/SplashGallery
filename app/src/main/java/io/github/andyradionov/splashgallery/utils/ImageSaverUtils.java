@@ -74,8 +74,9 @@ public class ImageSaverUtils {
                 try {
                     WallpaperManager.getInstance(context).setBitmap(bitmap);
                     callback.showSuccess(context.getString(R.string.wallpaper_set_msg));
-                } catch (NullPointerException e) {
-                    Timber.d(e, "WallpaperManager NPE");
+                } catch (RuntimeException e) {
+                    Timber.d(e, "WallpaperManager Exception");
+                    callback.showSuccess(context.getString(R.string.wallpaper_set_msg));
                 } catch (IOException e) {
                     callback.showError(context.getString(R.string.error_wallpaper_set));
                 }
