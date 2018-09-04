@@ -24,21 +24,20 @@ public class App extends Application implements HasActivityInjector {
 
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
-    private static AppComponent sAppComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Timber.plant(new Timber.DebugTree());
 
-        sAppComponent = DaggerAppComponent
+        AppComponent appComponent = DaggerAppComponent
                 .builder()
                 .application(this)
                 .build();
-        sAppComponent.inject(this);
+        appComponent.inject(this);
 
         Picasso picasso = new Picasso.Builder(this)
-                .downloader(new OkHttp3Downloader(sAppComponent.getOkHttpClientBuilder().build()))
+                .downloader(new OkHttp3Downloader(appComponent.getOkHttpClientBuilder().build()))
                 .build();
         Picasso.setSingletonInstance(picasso);
     }

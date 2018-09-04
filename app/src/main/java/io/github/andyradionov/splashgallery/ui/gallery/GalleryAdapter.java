@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Callback;
@@ -43,8 +44,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     public void updateData(@NonNull final List<Image> images) {
+        int startPosition = mImages.size();
+        int lastPosition = images.size();
         mImages.addAll(images);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(startPosition, startPosition + lastPosition);
     }
 
     @NonNull
@@ -101,6 +104,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
                         }
                     });
             ViewCompat.setTransitionName(mGalleryImage, image.getId());
+
+            mGalleryCard.startAnimation(AnimationUtils
+                        .loadAnimation(mGalleryCard.getContext(), android.R.anim.slide_in_left));
+
+
         }
 
         @Override
