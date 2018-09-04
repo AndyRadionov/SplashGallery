@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import io.github.andyradionov.splashgallery.BuildConfig;
+import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.app.App;
 import io.github.andyradionov.splashgallery.ui.details.ImageSaveCallback;
 import timber.log.Timber;
@@ -71,15 +73,17 @@ public class ImageSaverUtils {
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
                 try {
                     WallpaperManager.getInstance(context).setBitmap(bitmap);
-                    callback.showSuccess();
+                    callback.showSuccess(context.getString(R.string.wallpaper_set_msg));
+                } catch (NullPointerException e) {
+                    Timber.d(e, "WallpaperManager NPE");
                 } catch (IOException e) {
-                    callback.showError();
+                    callback.showError(context.getString(R.string.error_wallpaper_set));
                 }
             }
 
             @Override
             public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                callback.showError();
+                callback.showError(context.getString(R.string.error_wallpaper_set));
             }
 
             @Override
@@ -93,12 +97,16 @@ public class ImageSaverUtils {
         return new Target() {
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                new SaveImageAsyncTask(callback).execute(bitmap);
+                if (saveImage(bitmap)) {
+                    callback.showSuccess(context.getString(R.string.image_saved_msg));
+                } else {
+                    callback.showError(context.getString(R.string.error_image_save));
+                }
             }
 
             @Override
             public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                callback.showError();
+                callback.showError(context.getString(R.string.error_image_save));
             }
 
             @Override
@@ -141,32 +149,5 @@ public class ImageSaverUtils {
         File f = new File(imagePath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
-    }
-
-    private static class SaveImageAsyncTask extends AsyncTask<Bitmap, Void, Boolean> {
-        private final WeakReference<ImageSaveCallback> callbackReference;
-
-        SaveImageAsyncTask(ImageSaveCallback callback) {
-            callbackReference = new WeakReference<>(callback);
-        }
-
-        @Override
-        protected Boolean doInBackground(Bitmap... bitmaps) {
-            if (bitmaps != null && bitmaps[0] != null) {
-                return saveImage(bitmaps[0]);
-            }
-            return Boolean.FALSE;
-        }
-
-        @Override
-        protected void onPostExecute(@NonNull final Boolean result) {
-            ImageSaveCallback callback = callbackReference.get();
-            if (callback == null) return;
-            if (result) {
-                callback.showSuccess();
-            } else {
-                callback.showError();
-            }
-        }
     }
 }

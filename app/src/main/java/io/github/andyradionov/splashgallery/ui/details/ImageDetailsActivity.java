@@ -165,13 +165,13 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
     }
 
     @Override
-    public void showSaveSuccess() {
-        Snacky.builder().setText(R.string.image_saved_msg).setActivity(this).success().show();
+    public void showSaveSuccess(String message) {
+        Snacky.builder().setText(message).setActivity(this).success().show();
     }
 
     @Override
-    public void showSaveError() {
-        Snacky.builder().setText(R.string.error_image_save).setActivity(this).error().show();
+    public void showSaveError(String message) {
+        Snacky.builder().setText(message).setActivity(this).error().show();
     }
 
     private void showLoadError() {

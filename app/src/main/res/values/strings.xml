@@ -4,6 +4,8 @@
     <string name="image_saved_msg">IMAGE SAVED</string>
     <string name="error_image_save">ERROR IMAGE SAVING</string>
     <string name="error_image_load">ERROR IMAGE LOADING</string>
+    <string name="wallpaper_set_msg">WALLPAPER SET</string>
+    <string name="error_wallpaper_set">ERROR WALLPAPER SETTING</string>
     <string name="share_message">Look at this cool Image!</string>
     <string name="share_action_title">Share</string>
     <string name="save_action_title">Save</string>

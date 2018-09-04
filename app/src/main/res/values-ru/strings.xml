@@ -3,6 +3,8 @@
     <string name="image_saved_msg">ИЗОБРАЖЕНИЕ СОХРАНЕНО</string>
     <string name="error_image_save">ОШИБКА СОХРАНЕНИЯ ИЗОБРАЖЕНИЯ</string>
     <string name="error_image_load">ОШИБКА ЗАГРУЗКИ ИЗОБРАЖЕНИЯ</string>
+    <string name="wallpaper_set_msg">ОБОИ УСТНАОВЛЕНЫ</string>
+    <string name="error_wallpaper_set">ОШИБКА УСТАНОВКИ ОБОЕВ</string>
     <string name="share_message">Посмотри на эту классную картинку!</string>
     <string name="share_action_title">Поделиться</string>
     <string name="save_action_title">Сохранить</string>

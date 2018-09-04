@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.presenter.ImageDetailsPresenter;
+import io.github.andyradionov.splashgallery.utils.ImageSaverUtils;
 import io.github.andyradionov.splashgallery.utils.TestUtils;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -52,7 +53,8 @@ public class ImageDetailsActivityTest {
     @Test
     public void testClickSave_Success() {
 
-        MockedImageDetailsPresenter presenter = new MockedImageDetailsPresenter();
+        MockedImageDetailsPresenter presenter = new MockedImageDetailsPresenter(
+                new ImageSaverUtils(InstrumentationRegistry.getContext()));
         mActivityTestRule.getActivity().mImageDetailsPresenter = presenter;
 
         onView(withId(R.id.action_save)).perform(click());
@@ -62,8 +64,12 @@ public class ImageDetailsActivityTest {
     private static class MockedImageDetailsPresenter extends ImageDetailsPresenter {
         private boolean success;
 
+        public MockedImageDetailsPresenter(ImageSaverUtils imageSaverUtils) {
+            super(imageSaverUtils);
+        }
+
         @Override
-        public void showSuccess() {
+        public void showSuccess(String message) {
             success = true;
         }
     }

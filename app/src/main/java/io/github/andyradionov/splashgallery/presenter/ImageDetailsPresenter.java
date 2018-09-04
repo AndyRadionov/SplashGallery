@@ -34,12 +34,12 @@ public class ImageDetailsPresenter extends MvpPresenter<ImageDetailsView>
     }
 
     @Override
-    public void showSuccess() {
-        getViewState().showSaveSuccess();
+    public void showSuccess(String message) {
+        getViewState().showSaveSuccess(message);
     }
 
     @Override
-    public void showError() {
-        getViewState().showSaveError();
+    public void showError(String message) {
+        getViewState().showSaveError(message);
     }
 }

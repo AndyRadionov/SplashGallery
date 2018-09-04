@@ -9,7 +9,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
  */
 @StateStrategyType(SkipStrategy.class)
 public interface ImageDetailsView extends MvpView {
-    void showSaveSuccess();
+    void showSaveSuccess(String message);
 
-    void showSaveError();
+    void showSaveError(String message);
 }
