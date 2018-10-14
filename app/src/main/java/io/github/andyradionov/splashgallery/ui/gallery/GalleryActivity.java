@@ -3,6 +3,8 @@ package io.github.andyradionov.splashgallery.ui.gallery;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -15,17 +17,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
+import io.github.andyradionov.splashgallery.BuildConfig;
 import io.github.andyradionov.splashgallery.R;
-import io.github.andyradionov.splashgallery.app.App;
-import io.github.andyradionov.splashgallery.model.dto.Image;
+import io.github.andyradionov.splashgallery.data.entities.Image;
 import io.github.andyradionov.splashgallery.presenter.GalleryPresenter;
 import io.github.andyradionov.splashgallery.ui.about.AboutActivity;
-import io.github.andyradionov.splashgallery.ui.base.BaseActivity;
+import io.github.andyradionov.splashgallery.ui.common.BaseActivity;
 import io.github.andyradionov.splashgallery.ui.details.ImageDetailsActivity;
 import io.github.andyradionov.splashgallery.utils.NetworkUtils;
 
@@ -39,8 +45,17 @@ public class GalleryActivity extends BaseActivity implements
 
     private static final String CURRENT_QUERY_KEY = "current_query";
     private static final String CURRENT_PAGE_KEY = "current_page";
+    private static final String LIST_POSITION_KEY = "list_position";
 
-    @InjectPresenter GalleryPresenter mGalleryPresenter;
+    @Inject
+    @InjectPresenter
+    GalleryPresenter mGalleryPresenter;
+
+    @ProvidePresenter
+    GalleryPresenter providePresenter() {
+        return mGalleryPresenter;
+    }
+
     @BindView(R.id.pb_gallery_loading) ProgressBar mLoadingIndicator;
     @BindView(R.id.rv_gallery_container) RecyclerView mGalleryContainer;
     @BindView(R.id.iv_no_wifi) ImageView mNoInternetView;
@@ -50,9 +65,11 @@ public class GalleryActivity extends BaseActivity implements
     private GalleryAdapter mGalleryAdapter;
     private int mCurrentPage;
     private String mCurrentRequest;
+    private int mListPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
@@ -61,7 +78,7 @@ public class GalleryActivity extends BaseActivity implements
         setActionBar(getString(R.string.app_name));
 
         mCurrentPage = 1;
-        mCurrentRequest = App.MAIN_GALLERY;
+        mCurrentRequest = BuildConfig.API_MAIN_GALLERY;
 
         setupRecycler();
     }
@@ -71,6 +88,9 @@ public class GalleryActivity extends BaseActivity implements
         super.onSaveInstanceState(outState);
         outState.putString(CURRENT_QUERY_KEY, mCurrentRequest);
         outState.putInt(CURRENT_PAGE_KEY, mCurrentPage);
+        mListPosition = ((GridLayoutManager) mGalleryContainer.getLayoutManager())
+                .findFirstVisibleItemPosition();
+        outState.putInt(LIST_POSITION_KEY, mListPosition);
     }
 
     @Override
@@ -78,13 +98,19 @@ public class GalleryActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
         mCurrentRequest = savedInstanceState.getString(CURRENT_QUERY_KEY);
         mCurrentPage = savedInstanceState.getInt(CURRENT_PAGE_KEY);
-        setActionBarTitle(mCurrentRequest);
+        mListPosition = savedInstanceState.getInt(LIST_POSITION_KEY);
+        mGalleryContainer.scrollToPosition(mListPosition);
+        String actionBarTitle = mCurrentRequest.equals(BuildConfig.API_MAIN_GALLERY) ?
+                getString(R.string.app_name) : mCurrentRequest;
+        setActionBarTitle(actionBarTitle);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        restartSearch(mCurrentRequest);
+        if (mGalleryAdapter.getItemCount() == 0) {
+            restartSearch(mCurrentRequest);
+        }
     }
 
     @Override
@@ -138,7 +164,7 @@ public class GalleryActivity extends BaseActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_home:
-                restartSearch(App.MAIN_GALLERY);
+                restartSearch(BuildConfig.API_MAIN_GALLERY);
                 setActionBarTitle(getString(R.string.app_name));
                 return true;
             case R.id.action_about:
@@ -150,10 +176,17 @@ public class GalleryActivity extends BaseActivity implements
     }
 
     @Override
-    public void onClick(@NonNull String imageUrl) {
+    public void onClick(@NonNull String imageUrl, @NonNull String imageId, @NonNull ImageView sharedImageView) {
         Intent showImageIntent = new Intent(this, ImageDetailsActivity.class);
         showImageIntent.putExtra(ImageDetailsActivity.IMAGE_URL_EXTRA, imageUrl);
-        startActivity(showImageIntent);
+        showImageIntent.putExtra(ImageDetailsActivity.IMAGE_ID_EXTRA, imageId);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                sharedImageView,
+                ViewCompat.getTransitionName(sharedImageView));
+
+        startActivity(showImageIntent, options.toBundle());
     }
 
     @Override
@@ -185,10 +218,12 @@ public class GalleryActivity extends BaseActivity implements
 
         mScrollListener = new PagingScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view) {
+            public boolean onLoadMore(int page, int totalItemsCount, @NonNull RecyclerView view) {
+                if (!NetworkUtils.isInternetAvailable(GalleryActivity.this)) return false;
                 mCurrentPage = page;
                 mLoadingIndicator.setVisibility(View.VISIBLE);
                 mGalleryPresenter.searchImages(mCurrentRequest, mCurrentPage);
+                return true;
             }
         };
         mGalleryContainer.addOnScrollListener(mScrollListener);
@@ -199,6 +234,7 @@ public class GalleryActivity extends BaseActivity implements
             setViewsVisibility(View.INVISIBLE, View.INVISIBLE, View.VISIBLE, View.INVISIBLE);
         } else {
             setViewsVisibility(View.INVISIBLE, View.VISIBLE, View.INVISIBLE, View.INVISIBLE);
+            mListPosition = 0;
             mScrollListener.resetState();
             mCurrentPage = 1;
             mCurrentRequest = query;

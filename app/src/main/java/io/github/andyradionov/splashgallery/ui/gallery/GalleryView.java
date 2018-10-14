@@ -6,7 +6,7 @@ import com.arellomobile.mvp.MvpView;
 
 import java.util.List;
 
-import io.github.andyradionov.splashgallery.model.dto.Image;
+import io.github.andyradionov.splashgallery.data.entities.Image;
 
 /**
  * @author Andrey Radionov

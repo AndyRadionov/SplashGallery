@@ -1,4 +1,4 @@
-package io.github.andyradionov.splashgallery.model.dto;
+package io.github.andyradionov.splashgallery.data.entities;
 
 /**
  * Model class contains Image id, background color and different image size urls

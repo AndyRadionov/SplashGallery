@@ -5,7 +5,7 @@ package io.github.andyradionov.splashgallery.ui.details;
  */
 
 public interface ImageSaveCallback {
-    void showSuccess();
+    void showSuccess(String message);
 
-    void showError();
+    void showError(String message);
 }

@@ -1,17 +1,21 @@
 <resources>
-    <string name="app_name" translatable="false">Splash Gallery</string>
+    <string translatable="false" name="app_name">Splash Gallery</string>
     <string name="request_permission_text">Provide saving permission!</string>
     <string name="image_saved_msg">IMAGE SAVED</string>
     <string name="error_image_save">ERROR IMAGE SAVING</string>
     <string name="error_image_load">ERROR IMAGE LOADING</string>
+    <string name="wallpaper_set_msg">WALLPAPER SET</string>
+    <string name="error_wallpaper_set">ERROR WALLPAPER SETTING</string>
     <string name="share_message">Look at this cool Image!</string>
     <string name="share_action_title">Share</string>
     <string name="save_action_title">Save</string>
     <string name="home_action_title">Home</string>
     <string name="search_action_title">Search</string>
     <string name="about_title">About</string>
-    <string name="logo_description">Logo</string>
+    <string translatable="false" name="logo_description">Logo</string>
     <string name="no_results">NO RESULTS</string>
     <string name="connect_with_us_title">Connect with us</string>
     <string name="about_description">Search Over 300,000 free photos brought to you by the world’s most generous community of photographers from Unsplash.com. With a huge library of photos and thousands more being added each day, chances are you\'ll find a photo for you.</string>
+    <string name="set_as_wallpaper">Set as wallpaper</string>
+    <string name="set_wallpaper_message">Confirm setting wallpaper</string>
 </resources>

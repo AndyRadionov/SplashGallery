@@ -1,32 +1,42 @@
 package io.github.andyradionov.splashgallery.ui.details;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dagger.android.AndroidInjection;
 import de.mateware.snacky.Snacky;
 import io.github.andyradionov.splashgallery.R;
 import io.github.andyradionov.splashgallery.presenter.ImageDetailsPresenter;
-import io.github.andyradionov.splashgallery.ui.base.BaseActivity;
+import io.github.andyradionov.splashgallery.ui.common.BaseActivity;
 import timber.log.Timber;
 
 /**
@@ -38,19 +48,32 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
 
     private static final int REQUEST_STORAGE_PERMISSION = 42;
     private static final String IS_IMAGE_LOADED_KEY = "is_image_loaded";
-    private static final String IS_SNACK_SHOWED_KEY = "is_snack_showed";
     public static final String IMAGE_URL_EXTRA = "image_url";
+    public static final String IMAGE_ID_EXTRA = "image_id";
 
+    @Inject
     @InjectPresenter
     ImageDetailsPresenter mImageDetailsPresenter;
-    @BindView(R.id.iv_image_details) ImageView mImageDetailsView;
-    @BindView(R.id.pb_image_loading) ProgressBar mImageLoadingIndicator;
+
+    @ProvidePresenter
+    ImageDetailsPresenter providePresenter() {
+        return mImageDetailsPresenter;
+    }
+
+    @BindView(R.id.iv_image_details)
+    ImageView mImageDetailsView;
+    @BindView(R.id.pb_image_loading)
+    ProgressBar mImageLoadingIndicator;
+    @BindView(R.id.btn_set_as_wallpaper)
+    TextView mSetWallpaperButton;
+    private AlertDialog mSetWallpaperDialog;
     private boolean mIsImageLoaded;
-    private boolean mIsSnackShowed;
     private String mImageUrl;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_details);
 
@@ -60,17 +83,22 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
 
         if (savedInstanceState != null) {
             mIsImageLoaded = savedInstanceState.getBoolean(IS_IMAGE_LOADED_KEY);
-            mIsSnackShowed = savedInstanceState.getBoolean(IS_SNACK_SHOWED_KEY);
         }
 
-        final Intent startIntent = getIntent();
-        mImageUrl = startIntent.getStringExtra(IMAGE_URL_EXTRA);
+        final Bundle extras = getIntent().getExtras();
+        mImageUrl = extras.getString(IMAGE_URL_EXTRA);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            String imageTransitionName = extras.getString(IMAGE_ID_EXTRA);
+            mImageDetailsView.setTransitionName(imageTransitionName);
+        }
 
         Picasso.get().load(mImageUrl).into(mImageDetailsView, new Callback() {
             @Override
             public void onSuccess() {
                 mIsImageLoaded = true;
                 mImageLoadingIndicator.setVisibility(View.INVISIBLE);
+                mSetWallpaperButton.setEnabled(true);
                 supportInvalidateOptionsMenu();
             }
 
@@ -89,7 +117,6 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(IS_IMAGE_LOADED_KEY, mIsImageLoaded);
-        outState.putBoolean(IS_SNACK_SHOWED_KEY, mIsSnackShowed);
     }
 
     @Override
@@ -114,12 +141,14 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             case R.id.action_share:
                 final Intent shareIntent = createImageShareIntent(mImageUrl);
                 startActivity(shareIntent);
                 return true;
             case R.id.action_save:
-                mIsSnackShowed = false;
                 checkPermissions();
                 return true;
         }
@@ -134,35 +163,50 @@ public class ImageDetailsActivity extends BaseActivity implements ImageDetailsVi
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mImageDetailsPresenter.saveImage(mImageUrl);
             } else {
-                if (!mIsSnackShowed) {
-                    mIsSnackShowed = true;
-                    Snacky.builder().setText(R.string.request_permission_text).setActivity(this).warning().show();
-                }
+                Snacky.builder().setText(R.string.request_permission_text).setActivity(this).warning().show();
             }
         }
     }
 
-    @Override
-    public void showSaveSuccess() {
-        if (!mIsSnackShowed) {
-            mIsSnackShowed = true;
-            Snacky.builder().setText(R.string.image_saved_msg).setActivity(this).success().show();
-        }
+    @OnClick(R.id.btn_set_as_wallpaper)
+    public void onSetAsWallpaperClick(View view) {
+        mImageDetailsPresenter.showSetWallpaperDialog();
     }
 
     @Override
-    public void showSaveError() {
-        if (!mIsSnackShowed) {
-            mIsSnackShowed = true;
-            Snacky.builder().setText(R.string.error_image_save).setActivity(this).error().show();
+    public void showSaveSuccess(String message) {
+        Snacky.builder().setText(message).setActivity(this).success().show();
+    }
+
+    @Override
+    public void showSaveError(String message) {
+        Snacky.builder().setText(message).setActivity(this).error().show();
+    }
+
+    @Override
+    public void showSetWallpaperDialog() {
+        mSetWallpaperDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.set_wallpaper_message)
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.yes,
+                        (dialog, id) -> {
+                            dialog.cancel();
+                            mImageDetailsPresenter.setWallpaper(mImageUrl);
+                        })
+                .setNegativeButton(android.R.string.no,
+                        (dialog, which) -> mImageDetailsPresenter.hideSetWallpaperDialog())
+                .show();
+    }
+
+    @Override
+    public void hideSetWallpaperDialog() {
+        if (mSetWallpaperDialog != null) {
+            mSetWallpaperDialog.dismiss();
         }
     }
 
     private void showLoadError() {
-        if (!mIsSnackShowed) {
-            mIsSnackShowed = true;
-            Snacky.builder().setText(R.string.error_image_load).setActivity(this).error().show();
-        }
+        Snacky.builder().setText(R.string.error_image_load).setActivity(this).error().show();
     }
 
     private Intent createImageShareIntent(final String url) {
