@@ -55,7 +55,7 @@ public class GalleryPresenter extends MvpPresenter<GalleryView> {
                 .subscribe(images -> {
                     Timber.d("subscribe result: %s", images);
                     if (images.isEmpty()) {
-                        getViewState();
+                        getViewState().showError();
                     } else {
                         getViewState().showImages(images);
                     }
